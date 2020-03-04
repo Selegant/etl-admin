@@ -1,0 +1,15 @@
+#spring:
+#  mail:
+#    host: smtp.qq.com
+#    password: xxx
+#    port: 25
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          socketFactory:
+#            class: javax.net.ssl.SSLSocketFactory
+#          starttls:
+#            enable: true
+#            required: true
+#    username: xxx@qq.com
