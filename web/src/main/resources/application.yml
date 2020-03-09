@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/xxl_job?Unicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: 12345678
     tomcat:
@@ -36,10 +36,6 @@ spring:
             required: true
     username: xxx@qq.com
 
-mybatis:
-  mapper-locations: classpath*:mapper/*.xml
-
-
 xxl:
   job:
     accessToken: ''
@@ -50,3 +46,9 @@ xxl:
         max: 200
       slow:
         max: 100
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:/mapper/*.xml
+

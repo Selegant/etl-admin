@@ -1,5 +1,7 @@
 package com.selegant.web.controller.xxljob;
 
+import com.selegant.common.base.Result;
+import com.selegant.common.util.ResultUtil;
 import com.selegant.xxljob.core.cron.CronExpression;
 import com.selegant.xxljob.core.exception.XxlJobException;
 import com.selegant.xxljob.core.model.XxlJobGroup;
@@ -18,9 +20,7 @@ import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -40,27 +40,33 @@ public class JobInfoController {
 	@Resource
 	private XxlJobService xxlJobService;
 
-	@RequestMapping
-	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
+	@GetMapping("selectInfo")
+	@ResponseBody
+	public Result index(HttpServletRequest request, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
+
+		Map<String,Object> result = new HashMap<>();
 
 		// 枚举-字典
-		model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());	    // 路由策略-列表
-		model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());								// Glue类型-字典
-		model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
+		result.put("executorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());	    // 路由策略-列表
+		result.put("glueTypeEnum", GlueTypeEnum.values());								// Glue类型-字典
+		result.put("executorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
 
 		// 执行器列表
 		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
 
 		// filter group
-		List<XxlJobGroup> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
-		if (jobGroupList==null || jobGroupList.size()==0) {
-			throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
-		}
+//		List<XxlJobGroup> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
+//		if (jobGroupList==null || jobGroupList.size()==0) {
+//			throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
+//		}
+		// 暂时不过滤
+		List<XxlJobGroup> jobGroupList = jobGroupList_all;
 
-		model.addAttribute("JobGroupList", jobGroupList);
-		model.addAttribute("jobGroup", jobGroup);
+		result.put("jobGroupList", jobGroupList);
+		result.put("jobGroup", jobGroupList.stream().findFirst().get().getId());
 
-		return "jobinfo/jobinfo.index";
+		return ResultUtil.setSuccess(result);
+
 	}
 
 	public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupList_all){
@@ -94,7 +100,7 @@ public class JobInfoController {
 	@ResponseBody
 	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
 			@RequestParam(required = false, defaultValue = "10") int length,
-			int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
+			@RequestParam(defaultValue = "-1") int jobGroup,@RequestParam(defaultValue = "-1") int triggerStatus, String jobDesc, String executorHandler, String author) {
 
 		return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 	}
@@ -107,7 +113,7 @@ public class JobInfoController {
 
 	@RequestMapping("/update")
 	@ResponseBody
-	public ReturnT<String> update(XxlJobInfo jobInfo) {
+	public ReturnT<String> update(@RequestBody XxlJobInfo jobInfo) {
 		return xxlJobService.update(jobInfo);
 	}
 

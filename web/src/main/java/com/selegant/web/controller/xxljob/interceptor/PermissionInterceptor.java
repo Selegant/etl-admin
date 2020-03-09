@@ -31,7 +31,7 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// if need login
-		boolean needLogin = true;
+		boolean needLogin = false;
 		boolean needAdminuser = false;
 		HandlerMethod method = (HandlerMethod)handler;
 		PermissionLimit permission = method.getMethodAnnotation(PermissionLimit.class);

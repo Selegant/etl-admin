@@ -1,5 +1,7 @@
 package com.selegant.web.controller.xxljob;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.util.ObjectUtil;
 import com.selegant.xxljob.core.exception.XxlJobException;
 import com.selegant.xxljob.core.model.XxlJobGroup;
 import com.selegant.xxljob.core.model.XxlJobInfo;
@@ -84,33 +86,45 @@ public class JobLogController {
 	@RequestMapping("/pageList")
 	@ResponseBody
 	public Map<String, Object> pageList(HttpServletRequest request,
-                                        @RequestParam(required = false, defaultValue = "0") int start,
-                                        @RequestParam(required = false, defaultValue = "10") int length,
-                                        int jobGroup, int jobId, int logStatus, String filterTime) {
+                                        @RequestParam(required = false, defaultValue = "0") int pageNo,
+                                        @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                        @RequestParam(defaultValue = "0") int jobGroup,
+										@RequestParam(defaultValue = "0") int jobId,
+										@RequestParam(defaultValue = "-1")int logStatus,
+										@RequestParam(required = false, value = "filterTime[]")String filterTime[]) {
 
 		// valid permission
-		JobInfoController.validPermission(request, jobGroup);	// 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
+//		JobInfoController.validPermission(request, jobGroup);	// 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
 
 		// parse param
 		Date triggerTimeStart = null;
 		Date triggerTimeEnd = null;
-		if (filterTime!=null && filterTime.trim().length()>0) {
-			String[] temp = filterTime.split(" - ");
-			if (temp.length == 2) {
-				triggerTimeStart = DateUtil.parseDateTime(temp[0]);
-				triggerTimeEnd = DateUtil.parseDateTime(temp[1]);
-			}
+//		if (filterTime!=null && filterTime.trim().length()>0) {
+//			String[] temp = filterTime.split(" - ");
+//			if (temp.length == 2) {
+//				triggerTimeStart = DateUtil.parseDateTime(temp[0]);
+//				triggerTimeEnd = DateUtil.parseDateTime(temp[1]);
+//			}
+//		}
+		if(ObjectUtil.isNotEmpty(filterTime)){
+			triggerTimeStart = DateUtil.parse(filterTime[0], DatePattern.NORM_DATETIME_PATTERN);
+			triggerTimeEnd = DateUtil.parse(filterTime[1], DatePattern.NORM_DATETIME_PATTERN);
 		}
 
+		int start = (pageNo-1) * pageSize;
+		int length = start + pageSize;
 		// page query
 		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 
 		// package result
-		Map<String, Object> maps = new HashMap<String, Object>();
-	    maps.put("recordsTotal", list_count);		// 总记录数
-	    maps.put("recordsFiltered", list_count);	// 过滤后的总记录数
-	    maps.put("data", list);  					// 分页列表
+		Map<String, Object> maps = new HashMap<>(16);
+
+		maps.put("pageNo",pageNo);
+		maps.put("pageSize",pageSize);
+		maps.put("totalCount", list_count);		// 总记录数
+		maps.put("totalPage", list_count);	// 过滤后的总记录数
+		maps.put("data", list);  					// 分页列表
 		return maps;
 	}
 

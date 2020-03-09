@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.common.mapper.EtlPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.selegant.common.model.EtlPermission">
+        <!--@mbg.generated-->
+        <!--@Table etl_permission-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="permission_id" jdbcType="VARCHAR" property="permissionId"/>
+        <result column="permission_name" jdbcType="VARCHAR" property="permissionName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, permission_id, permission_name
+    </sql>
+    <select id="getActionByPermission" resultType="java.util.Map">
+        select a.permission_id as permission_id,permission_name,c.action_id as action_id ,action,action_desc,default_check
+        from etl_permission a,etl_action_permission b,etl_action c
+        where b.action_id = c.action_id and a.permission_id = b.permission_id
+        and a.permission_id = #{permission_id,jdbcType=VARCHAR}
+    </select>
+    <select id="getPermissionByRoleId" resultType="java.util.Map">
+        select a.permission_id as permission_id,permission_name,b.role_id as role_id,name,role_desc,status,creator_id,create_time,deleted
+        from etl_permission a,etl_role_permission b, etl_role c
+        where a.permission_id = b.permission_id and b.role_id = c.role_id
+        and c.role_id = #{role_id,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,11 +1,15 @@
 package com.selegant.xxljob.core.route;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.selegant.xxljob.core.route.strategy.*;
 import com.selegant.xxljob.core.util.I18nUtil;
+import lombok.Data;
 
 /**
  * Created by xuxueli on 17/3/10.
  */
+
 public enum ExecutorRouteStrategyEnum {
 
     FIRST(I18nUtil.getString("jobconf_route_first"), new ExecutorRouteFirst()),
@@ -43,6 +47,18 @@ public enum ExecutorRouteStrategyEnum {
             }
         }
         return defaultItem;
+    }
+
+
+    public static String toJson(){
+        JSONArray jsonArray = new JSONArray();
+        for (ExecutorRouteStrategyEnum e : ExecutorRouteStrategyEnum.values()) {
+            JSONObject object = new JSONObject();
+            object.put("title", e.getTitle());
+            object.put("name", e.name());
+            jsonArray.add(object);
+        }
+        return jsonArray.toString();
     }
 
 }

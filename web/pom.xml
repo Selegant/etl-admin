@@ -20,11 +20,7 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -40,6 +36,18 @@
         <dependency>
             <groupId>com.selegant</groupId>
             <artifactId>xxl-job</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.selegant</groupId>
+            <artifactId>datax</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.selegant</groupId>
+            <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
 

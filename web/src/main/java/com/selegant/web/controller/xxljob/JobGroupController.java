@@ -10,7 +10,9 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.RegistryConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -31,15 +33,34 @@ public class JobGroupController {
 	@Resource
 	private XxlJobRegistryDao xxlJobRegistryDao;
 
-	@RequestMapping
-	public String index(Model model) {
+//	@RequestMapping
+//	public String index(Model model) {
+//
+//		// job group (executor)
+//		List<XxlJobGroup> list = xxlJobGroupDao.findAll();
+//
+//		model.addAttribute("list", list);
+//		return "jobgroup/jobgroup.index";
+//	}
+
+	@GetMapping
+	@ResponseBody
+	public Map<String, Object> index(@RequestParam(required = false, defaultValue = "0") int pageNo,
+									 @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
 		// job group (executor)
 		List<XxlJobGroup> list = xxlJobGroupDao.findAll();
 
-		model.addAttribute("list", list);
-		return "jobgroup/jobgroup.index";
+		Map<String, Object> maps = new HashMap<>(16);
+
+		maps.put("pageNo",pageNo);
+		maps.put("pageSize",pageSize);
+		maps.put("totalCount", list.size());		// 总记录数
+		maps.put("totalPage", list.size());	// 过滤后的总记录数
+		maps.put("data", list);  					// 分页列表
+		return maps;
 	}
+
 
 	@RequestMapping("/save")
 	@ResponseBody

@@ -12,6 +12,7 @@
 	<artifactId>etl-admin</artifactId>
 	<version>1.0.0</version>
 	<name>etl-admin</name>
+	<packaging>pom</packaging>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -20,12 +21,14 @@
 		<mybatis.plus.version>3.3.1.tmp</mybatis.plus.version>
 		<mybatis.version>2.1.1</mybatis.version>
 		<hutool.version>5.1.5</hutool.version>
+		<fastjson.version>1.2.66</fastjson.version>
 	</properties>
 
 	<modules>
 		<module>web</module>
 		<module>xxl-job</module>
 		<module>datax</module>
+		<module>common</module>
 	</modules>
 
 	<dependencies>
@@ -44,6 +47,12 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -66,16 +75,16 @@
 		</dependency>
 
 		<!-- mybatis -->
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>${mybatis.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.mybatis.spring.boot</groupId>-->
+<!--			<artifactId>mybatis-spring-boot-starter</artifactId>-->
+<!--			<version>${mybatis.version}</version>-->
+<!--		</dependency>-->
 
 		<!-- mybatis-plus -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus</artifactId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
 			<version>${mybatis.plus.version}</version>
 		</dependency>
 
@@ -92,6 +101,12 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<!-- fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

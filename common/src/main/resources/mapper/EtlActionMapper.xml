@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.common.mapper.EtlActionMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.common.model.EtlAction">
+    <!--@mbg.generated-->
+    <!--@Table etl_action-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="action_id" jdbcType="VARCHAR" property="actionId" />
+    <result column="action" jdbcType="VARCHAR" property="action" />
+    <result column="action_desc" jdbcType="VARCHAR" property="actionDesc" />
+    <result column="default_check" jdbcType="BOOLEAN" property="defaultCheck" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, action_id, `action`, action_desc, default_check
+  </sql>
+</mapper>

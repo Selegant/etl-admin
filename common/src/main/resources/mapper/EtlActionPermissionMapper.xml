@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.common.mapper.EtlActionPermissionMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.common.model.EtlActionPermission">
+    <!--@mbg.generated-->
+    <!--@Table etl_action_permission-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="action_id" jdbcType="VARCHAR" property="actionId" />
+    <result column="permission_id" jdbcType="VARCHAR" property="permissionId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, action_id, permission_id
+  </sql>
+</mapper>

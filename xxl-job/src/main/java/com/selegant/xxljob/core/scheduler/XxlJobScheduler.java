@@ -26,7 +26,7 @@ public class XxlJobScheduler  {
 
     public void init() throws Exception {
         // init i18n
-//        initI18n();
+        initI18n();
 
         // admin registry monitor run
         JobRegistryMonitorHelper.getInstance().start();

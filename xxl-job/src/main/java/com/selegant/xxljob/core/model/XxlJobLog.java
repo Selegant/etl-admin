@@ -1,5 +1,8 @@
 package com.selegant.xxljob.core.model;
 
+import cn.hutool.core.date.DatePattern;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 /**
@@ -22,6 +25,7 @@ public class XxlJobLog {
 	private int executorFailRetryCount;
 
 	// trigger info
+	@JsonFormat(pattern= DatePattern.NORM_DATETIME_PATTERN,timezone = "GMT+8")
 	private Date triggerTime;
 	private int triggerCode;
 	private String triggerMsg;
