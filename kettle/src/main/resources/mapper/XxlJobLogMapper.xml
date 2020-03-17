@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.kettle.mapper.XxlJobLogMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.XxlJobLog">
+    <!--@mbg.generated generated on Thu Jan 09 10:01:57 CST 2020.-->
+    <!--@Table xxl_job_log-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="job_group" jdbcType="INTEGER" property="jobGroup" />
+    <result column="job_id" jdbcType="INTEGER" property="jobId" />
+    <result column="executor_address" jdbcType="VARCHAR" property="executorAddress" />
+    <result column="executor_handler" jdbcType="VARCHAR" property="executorHandler" />
+    <result column="executor_param" jdbcType="VARCHAR" property="executorParam" />
+    <result column="executor_sharding_param" jdbcType="VARCHAR" property="executorShardingParam" />
+    <result column="executor_fail_retry_count" jdbcType="INTEGER" property="executorFailRetryCount" />
+    <result column="trigger_time" jdbcType="TIMESTAMP" property="triggerTime" />
+    <result column="trigger_code" jdbcType="INTEGER" property="triggerCode" />
+    <result column="trigger_msg" jdbcType="LONGVARCHAR" property="triggerMsg" />
+    <result column="handle_time" jdbcType="TIMESTAMP" property="handleTime" />
+    <result column="handle_code" jdbcType="INTEGER" property="handleCode" />
+    <result column="handle_msg" jdbcType="LONGVARCHAR" property="handleMsg" />
+    <result column="alarm_status" jdbcType="TINYINT" property="alarmStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated generated on Thu Jan 09 10:01:57 CST 2020.-->
+    id, job_group, job_id, executor_address, executor_handler, executor_param, executor_sharding_param,
+    executor_fail_retry_count, trigger_time, trigger_code, trigger_msg, handle_time,
+    handle_code, handle_msg, alarm_status
+  </sql>
+
+  <delete id="deleteByJobId" >
+    delete from xxl_job_log
+    WHERE job_id = #{jobId}
+  </delete>
+
+</mapper>

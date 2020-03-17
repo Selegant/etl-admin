@@ -46,10 +46,11 @@ public class JobGroupController {
 	@GetMapping
 	@ResponseBody
 	public Map<String, Object> index(@RequestParam(required = false, defaultValue = "0") int pageNo,
-									 @RequestParam(required = false, defaultValue = "10") int pageSize) {
+									 @RequestParam(required = false, defaultValue = "10") int pageSize,
+									 @RequestParam(required = false, defaultValue = "-1")int id) {
 
 		// job group (executor)
-		List<XxlJobGroup> list = xxlJobGroupDao.findAll();
+		List<XxlJobGroup> list = xxlJobGroupDao.findById(id);
 
 		Map<String, Object> maps = new HashMap<>(16);
 

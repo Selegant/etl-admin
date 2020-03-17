@@ -2,7 +2,7 @@ server:
   port: 8082
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: 12345678
@@ -52,3 +52,21 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:/mapper/*.xml
 
+mapper:
+  i-d-e-n-t-i-t-y: MYSQL
+  mappers: com.baomidou.mybatisplus.core.mapper.BaseMapper
+  not-empty: true
+  enum-as-simple-type: true
+
+kettle:
+  repository-name: lx
+  repository-username: admin
+  repository-password: shulan.com
+  access-type: Native
+  database-type: MYSQL
+  database-host: localhost
+  database-name: kettle_lx
+  database-port: 3306
+  database-user: root
+  database-password: 12345678
+  plugins-path: /Users/selegant/Downloads/plugins

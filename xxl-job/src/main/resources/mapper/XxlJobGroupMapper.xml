@@ -21,9 +21,25 @@
 		t.address_list
 	</sql>
 
+	<select id="findById" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_job_group AS t
+		<where>
+			<if test="id gt 0">
+				t.id = #{id}
+			</if>
+		</where>
+		ORDER BY t.order ASC
+	</select>
+
 	<select id="findAll" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_group AS t
+		<where>
+			<if test="id gt 0">
+				t.id = #{id}
+			</if>
+		</where>
 		ORDER BY t.order ASC
 	</select>
 

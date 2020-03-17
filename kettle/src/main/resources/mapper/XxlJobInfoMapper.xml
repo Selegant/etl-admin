@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.kettle.mapper.XxlJobInfoMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.XxlJobInfo">
+    <!--@mbg.generated generated on Tue Jan 07 10:55:05 CST 2020.-->
+    <!--@Table xxl_job_info-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="job_group" jdbcType="INTEGER" property="jobGroup" />
+    <result column="job_cron" jdbcType="VARCHAR" property="jobCron" />
+    <result column="job_desc" jdbcType="VARCHAR" property="jobDesc" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="alarm_email" jdbcType="VARCHAR" property="alarmEmail" />
+    <result column="executor_route_strategy" jdbcType="VARCHAR" property="executorRouteStrategy" />
+    <result column="executor_handler" jdbcType="VARCHAR" property="executorHandler" />
+    <result column="executor_param" jdbcType="VARCHAR" property="executorParam" />
+    <result column="executor_block_strategy" jdbcType="VARCHAR" property="executorBlockStrategy" />
+    <result column="executor_timeout" jdbcType="INTEGER" property="executorTimeout" />
+    <result column="executor_fail_retry_count" jdbcType="INTEGER" property="executorFailRetryCount" />
+    <result column="glue_type" jdbcType="VARCHAR" property="glueType" />
+    <result column="glue_source" jdbcType="LONGVARCHAR" property="glueSource" />
+    <result column="glue_remark" jdbcType="VARCHAR" property="glueRemark" />
+    <result column="glue_updatetime" jdbcType="TIMESTAMP" property="glueUpdatetime" />
+    <result column="child_jobid" jdbcType="VARCHAR" property="childJobid" />
+    <result column="trigger_status" jdbcType="TINYINT" property="triggerStatus" />
+    <result column="trigger_last_time" jdbcType="BIGINT" property="triggerLastTime" />
+    <result column="trigger_next_time" jdbcType="BIGINT" property="triggerNextTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated generated on Tue Jan 07 10:55:05 CST 2020.-->
+    id, job_group, job_cron, job_desc, add_time, update_time, author, alarm_email, executor_route_strategy,
+    executor_handler, executor_param, executor_block_strategy, executor_timeout, executor_fail_retry_count,
+    glue_type, glue_source, glue_remark, glue_updatetime, child_jobid, trigger_status,
+    trigger_last_time, trigger_next_time
+  </sql>
+</mapper>

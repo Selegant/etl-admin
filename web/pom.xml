@@ -15,7 +15,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-
+        <mybatis.plus.version>3.3.1.tmp</mybatis.plus.version>
     </properties>
 
     <dependencies>
@@ -50,6 +50,27 @@
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.selegant</groupId>
+            <artifactId>kettle</artifactId>
+            <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!-- mybatis-plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis.plus.version}</version>
+        </dependency>
+
 
     </dependencies>
 

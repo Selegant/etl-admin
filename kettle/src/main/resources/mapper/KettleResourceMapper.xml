@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.kettle.mapper.KettleResourceMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.KettleResource">
+    <!--@mbg.generated generated on Mon Jan 06 14:19:17 CST 2020.-->
+    <!--@Table k_resource-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="repository_directory" jdbcType="VARCHAR" property="repositoryDirectory" />
+    <result column="modified_user" jdbcType="VARCHAR" property="modifiedUser" />
+    <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    <result column="object_type" jdbcType="INTEGER" property="objectType" />
+    <result column="object_id" jdbcType="VARCHAR" property="objectId" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="deleted" jdbcType="BOOLEAN" property="deleted" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="log_level" jdbcType="INTEGER" property="logLevel" />
+    <result column="kettle_params" jdbcType="LONGVARCHAR" property="kettleParams" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated generated on Mon Jan 06 14:19:17 CST 2020.-->
+    id, `name`, repository_directory, modified_user, modified_date, object_type, object_id,
+    description, deleted, create_time, update_time, log_level, kettle_params
+  </sql>
+
+  <update id="truncateTable">
+    truncate table kettle_resource
+  </update>
+
+  <update id="updateByObjectIdAndOrderType" parameterType="com.selegant.kettle.model.KettleResource">
+    <!--@mbg.generated-->
+    update kettle_resource
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="repositoryDirectory != null">
+        repository_directory = #{repositoryDirectory,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedUser != null">
+        modified_user = #{modifiedUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifiedDate != null">
+        modified_date = #{modifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="objectId != null">
+        object_id = #{objectId,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=BOOLEAN},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logLevel != null">
+        log_level = #{logLevel,jdbcType=INTEGER},
+      </if>
+      <if test="kettleParams != null">
+        kettle_params = #{kettleParams,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where object_id = #{objectId,jdbcType=VARCHAR} and object_type = #{objectType,jdbcType=INTEGER}
+  </update>
+</mapper>

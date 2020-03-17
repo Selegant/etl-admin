@@ -18,10 +18,10 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<xxl.job.version>2.1.2</xxl.job.version>
-		<mybatis.plus.version>3.3.1.tmp</mybatis.plus.version>
 		<mybatis.version>2.1.1</mybatis.version>
 		<hutool.version>5.1.5</hutool.version>
 		<fastjson.version>1.2.66</fastjson.version>
+		<mysql.version>5.1.46</mysql.version>
 	</properties>
 
 	<modules>
@@ -29,6 +29,8 @@
 		<module>xxl-job</module>
 		<module>datax</module>
 		<module>common</module>
+		<module>executor</module>
+		<module>kettle</module>
 	</modules>
 
 	<dependencies>
@@ -64,7 +66,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<scope>compile</scope>
+			<version>${mysql.version}</version>
 		</dependency>
 
 		<!-- hutool -->
@@ -81,12 +83,6 @@
 <!--			<version>${mybatis.version}</version>-->
 <!--		</dependency>-->
 
-		<!-- mybatis-plus -->
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>${mybatis.plus.version}</version>
-		</dependency>
 
 		<!-- xxl-job-core -->
 		<dependency>

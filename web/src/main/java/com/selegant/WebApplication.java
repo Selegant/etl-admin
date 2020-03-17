@@ -1,7 +1,6 @@
 package com.selegant;
 
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.annotation.MapperScans;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
@@ -9,7 +8,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 
-@MapperScan({"com.selegant.common.mapper","com.selegant.xxljob.dao"})
+@MapperScan({"com.selegant.common.mapper","com.selegant.xxljob.dao","com.selegant.kettle.mapper"})
 @SpringBootApplication
 public class WebApplication {
 

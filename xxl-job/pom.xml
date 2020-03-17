@@ -15,6 +15,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <mybatis.plus.version>3.3.1.tmp</mybatis.plus.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,14 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+
+        <!-- mybatis-plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis.plus.version}</version>
         </dependency>
     </dependencies>
 

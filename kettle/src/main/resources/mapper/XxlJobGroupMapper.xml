@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.kettle.mapper.XxlJobGroupMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.XxlJobGroup">
+    <!--@mbg.generated generated on Tue Jan 07 11:18:59 CST 2020.-->
+    <!--@Table xxl_job_group-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="app_name" jdbcType="VARCHAR" property="appName" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="address_type" jdbcType="TINYINT" property="addressType" />
+    <result column="address_list" jdbcType="VARCHAR" property="addressList" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated generated on Tue Jan 07 11:18:59 CST 2020.-->
+    id, app_name, title, `order`, address_type, address_list
+  </sql>
+</mapper>

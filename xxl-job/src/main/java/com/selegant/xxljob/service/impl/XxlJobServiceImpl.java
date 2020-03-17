@@ -42,16 +42,17 @@ public class XxlJobServiceImpl implements XxlJobService {
 	private XxlJobLogReportDao xxlJobLogReportDao;
 
 	@Override
-	public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
+	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
 
+		int start = (pageNo-1) * pageSize;
 		// page list
-		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
-		int list_count = xxlJobInfoDao.pageListCount(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
-		maps.put("pageNo",start);
-		maps.put("pageSize",length);
+		maps.put("pageNo",pageNo);
+		maps.put("pageSize",pageSize);
 	    maps.put("totalCount", list_count);		// 总记录数
 	    maps.put("totalPage", list_count);	// 过滤后的总记录数
 	    maps.put("data", list);  					// 分页列表

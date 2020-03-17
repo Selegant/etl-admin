@@ -31,6 +31,7 @@ public class XxlJobLog {
 	private String triggerMsg;
 
 	// handle info
+	@JsonFormat(pattern= DatePattern.NORM_DATETIME_PATTERN,timezone = "GMT+8")
 	private Date handleTime;
 	private int handleCode;
 	private String handleMsg;
