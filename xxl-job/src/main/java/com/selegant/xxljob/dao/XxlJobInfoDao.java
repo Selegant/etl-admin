@@ -21,7 +21,8 @@ public interface XxlJobInfoDao {
                                      @Param("jobDesc") String jobDesc,
                                      @Param("executorHandler") String executorHandler,
                                      @Param("author") String author,
-									 @Param("objectType") String objectType);
+									 @Param("objectType") String objectType,
+									 @Param("cron") String cron);
 	public int pageListCount(@Param("offset") int offset,
                              @Param("pagesize") int pagesize,
                              @Param("jobGroup") int jobGroup,
@@ -29,7 +30,8 @@ public interface XxlJobInfoDao {
                              @Param("jobDesc") String jobDesc,
                              @Param("executorHandler") String executorHandler,
                              @Param("author") String author,
-							 @Param("objectType") String objectType);
+							 @Param("objectType") String objectType,
+							 @Param("cron") String cron);
 
 	public int save(XxlJobInfo info);
 

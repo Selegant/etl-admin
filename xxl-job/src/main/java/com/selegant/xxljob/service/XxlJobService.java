@@ -26,7 +26,7 @@ public interface XxlJobService {
 	 * @param author
 	 * @return
 	 */
-	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType);
+	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType,String cron);
 
 	/**
 	 * add job

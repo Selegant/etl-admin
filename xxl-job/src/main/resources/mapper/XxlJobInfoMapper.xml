@@ -86,6 +86,9 @@
 			<if test="objectType != null and objectType != ''">
 				AND t.object_type = #{objectType}
 			</if>
+			<if test="cron != null and cron != ''">
+				AND t.job_cron = #{cron}
+			</if>
 		</trim>
 		ORDER BY id DESC
 		LIMIT #{offset}, #{pagesize}
@@ -112,6 +115,9 @@
 			</if>
 			<if test="objectType != null and objectType != ''">
 				AND t.object_type = #{objectType}
+			</if>
+			<if test="cron != null and cron != ''">
+				AND t.job_cron = #{cron}
 			</if>
 		</trim>
 	</select>

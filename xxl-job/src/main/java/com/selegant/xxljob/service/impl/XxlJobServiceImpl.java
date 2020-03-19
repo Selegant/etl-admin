@@ -46,12 +46,12 @@ public class XxlJobServiceImpl implements XxlJobService {
 	private XxlJobLogReportDao xxlJobLogReportDao;
 
 	@Override
-	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType) {
+	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType,String cron) {
 
 		int start = (pageNo-1) * pageSize;
 		// page list
-		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType);
-		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType);
+		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
+		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
 
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
@@ -339,7 +339,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		List<Map<String, Object>> triggerList = new ArrayList<>(16);
 		Date start = cn.hutool.core.date.DateUtil.parse(startDate, DatePattern.NORM_DATE_PATTERN);
 		Date end = cn.hutool.core.date.DateUtil.parse(endDate, DatePattern.NORM_DATE_PATTERN);
-
+		end = DateUtil.offsetDay(end,1);
 		List<XxlJobLog> list = xxlJobLogDao.getMonitorLogInfo(start,end);
 
 		long days = DateUtil.betweenDay(start,end,true);

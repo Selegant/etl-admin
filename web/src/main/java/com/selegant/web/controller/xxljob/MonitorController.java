@@ -71,8 +71,8 @@ public class MonitorController {
                                                @RequestParam(required = false, defaultValue = "0") int start,
                                                @RequestParam(required = false, defaultValue = "10") int length) {
 
-        List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, -1, -1, "", "", "",null);
-        int list_count = xxlJobInfoDao.pageListCount(start, length, -1, -1, "", "", "",null);
+        List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, -1, -1, "", "", "",null,null);
+        int list_count = xxlJobInfoDao.pageListCount(start, length, -1, -1, "", "", "",null,null);
         List<Map<String,Object>> results = new ArrayList<>();
         list.forEach(s->{
             List<XxlJobLog> logs = xxlJobLogDao.monitorList(s.getId());
