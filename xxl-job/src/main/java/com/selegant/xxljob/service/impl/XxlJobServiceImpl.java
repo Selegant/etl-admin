@@ -1,8 +1,11 @@
 package com.selegant.xxljob.service.impl;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.selegant.xxljob.core.cron.CronExpression;
 import com.selegant.xxljob.core.model.XxlJobGroup;
 import com.selegant.xxljob.core.model.XxlJobInfo;
+import com.selegant.xxljob.core.model.XxlJobLog;
 import com.selegant.xxljob.core.model.XxlJobLogReport;
 import com.selegant.xxljob.core.route.ExecutorRouteStrategyEnum;
 import com.selegant.xxljob.core.thread.JobScheduleHelper;
@@ -12,7 +15,6 @@ import com.selegant.xxljob.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
-import com.xxl.job.core.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import javax.annotation.Resource;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * core job action for xxl-job
@@ -42,12 +45,12 @@ public class XxlJobServiceImpl implements XxlJobService {
 	private XxlJobLogReportDao xxlJobLogReportDao;
 
 	@Override
-	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
+	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType) {
 
 		int start = (pageNo-1) * pageSize;
 		// page list
-		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author);
-		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType);
+		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType);
 
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
@@ -287,15 +290,21 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
 	@Override
-	public Map<String, Object> dashboardInfo() {
+	public ReturnT<Map<String,Object>> dashboardInfo() {
 
 		int jobInfoCount = xxlJobInfoDao.findAllCount();
+		int jobCount = xxlJobInfoDao.findTypeCount(2);
+		int transCount = jobInfoCount - jobCount;
 		int jobLogCount = 0;
 		int jobLogSuccessCount = 0;
+		int jobLogFailCount = 0;
+		int jobRunningCount = 0;
 		XxlJobLogReport xxlJobLogReport = xxlJobLogReportDao.queryLogReportTotal();
 		if (xxlJobLogReport != null) {
 			jobLogCount = xxlJobLogReport.getRunningCount() + xxlJobLogReport.getSucCount() + xxlJobLogReport.getFailCount();
 			jobLogSuccessCount = xxlJobLogReport.getSucCount();
+			jobLogFailCount = xxlJobLogReport.getFailCount();
+			jobRunningCount = xxlJobLogReport.getRunningCount();
 		}
 
 		// executor count
@@ -316,64 +325,49 @@ public class XxlJobServiceImpl implements XxlJobService {
 		dashboardMap.put("jobInfoCount", jobInfoCount);
 		dashboardMap.put("jobLogCount", jobLogCount);
 		dashboardMap.put("jobLogSuccessCount", jobLogSuccessCount);
+		dashboardMap.put("jobLogFailCount",jobLogFailCount);
+		dashboardMap.put("jobRunningCount",jobRunningCount);
 		dashboardMap.put("executorCount", executorCount);
-		return dashboardMap;
+		dashboardMap.put("jobCount",jobCount);
+		dashboardMap.put("transCount",transCount);
+		return new ReturnT<>(dashboardMap);
 	}
 
 	@Override
-	public ReturnT<Map<String, Object>> chartInfo(Date startDate, Date endDate) {
+	public ReturnT<List<Map<String, Object>>> chartInfo(String startDate, String endDate) {
+		List<Map<String, Object>> triggerList = new ArrayList<>(16);
+		Date start = cn.hutool.core.date.DateUtil.parse(startDate, DatePattern.NORM_DATE_PATTERN);
+		Date end = cn.hutool.core.date.DateUtil.parse(endDate, DatePattern.NORM_DATE_PATTERN);
 
-		// process
-		List<String> triggerDayList = new ArrayList<String>();
-		List<Integer> triggerDayCountRunningList = new ArrayList<Integer>();
-		List<Integer> triggerDayCountSucList = new ArrayList<Integer>();
-		List<Integer> triggerDayCountFailList = new ArrayList<Integer>();
-		int triggerCountRunningTotal = 0;
-		int triggerCountSucTotal = 0;
-		int triggerCountFailTotal = 0;
+		List<XxlJobLog> list = xxlJobLogDao.getMonitorLogInfo(start,end);
 
-		List<XxlJobLogReport> logReportList = xxlJobLogReportDao.queryLogReport(startDate, endDate);
+		long days = DateUtil.betweenDay(start,end,true);
 
-		if (logReportList!=null && logReportList.size()>0) {
-			for (XxlJobLogReport item: logReportList) {
-				String day = DateUtil.formatDate(item.getTriggerDay());
-				int triggerDayCountRunning = item.getRunningCount();
-				int triggerDayCountSuc = item.getSucCount();
-				int triggerDayCountFail = item.getFailCount();
-
-				triggerDayList.add(day);
-				triggerDayCountRunningList.add(triggerDayCountRunning);
-				triggerDayCountSucList.add(triggerDayCountSuc);
-				triggerDayCountFailList.add(triggerDayCountFail);
-
-				triggerCountRunningTotal += triggerDayCountRunning;
-				triggerCountSucTotal += triggerDayCountSuc;
-				triggerCountFailTotal += triggerDayCountFail;
+		for (int i = 0; i < days ; i++) {
+			Date nowDate = DateUtil.offsetDay(start,i);
+			logger.info(DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN));
+			List<XxlJobLog> dayList = list.stream().filter(s->DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN).equals(DateUtil.format(s.getHandleTime(),DatePattern.NORM_DATE_PATTERN))).collect(Collectors.toList());
+			int triggerDayCountRunning = 0;
+			int triggerDayCountSuc = 0;
+			int triggerDayCountFail = 0;
+			Map<String,Object> triggerMap = new HashMap<>(16);
+			if (!dayList.isEmpty()) {
+				triggerDayCountRunning = Math.toIntExact(dayList.stream().filter(s -> 0 == s.getHandleCode()).count());
+				triggerDayCountSuc = Math.toIntExact(dayList.stream().filter(s -> 200 == s.getHandleCode()).count());
+				triggerDayCountFail = Math.toIntExact(dayList.stream().filter(s -> 500 == s.getHandleCode()).count());
 			}
-		} else {
-			for (int i = -6; i <= 0; i++) {
-				triggerDayList.add(DateUtil.formatDate(DateUtil.addDays(new Date(), i)));
-				triggerDayCountRunningList.add(0);
-				triggerDayCountSucList.add(0);
-				triggerDayCountFailList.add(0);
-			}
+			triggerMap.put("日期",DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN));
+			triggerMap.put("成功次数",triggerDayCountSuc);
+			triggerMap.put("失败次数",triggerDayCountFail);
+			triggerMap.put("正在运行数",triggerDayCountRunning);
+			triggerList.add(triggerMap);
 		}
 
-		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("triggerDayList", triggerDayList);
-		result.put("triggerDayCountRunningList", triggerDayCountRunningList);
-		result.put("triggerDayCountSucList", triggerDayCountSucList);
-		result.put("triggerDayCountFailList", triggerDayCountFailList);
-
-		result.put("triggerCountRunningTotal", triggerCountRunningTotal);
-		result.put("triggerCountSucTotal", triggerCountSucTotal);
-		result.put("triggerCountFailTotal", triggerCountFailTotal);
-
-		return new ReturnT<Map<String, Object>>(result);
+		return new ReturnT<>(triggerList);
 	}
 
 	@Override
-	public Map<String, Object> monitorInfo() {
+	public ReturnT<Map<String, Object>> monitorInfo() {
 		XxlJobLogReport xxlJobLogReport = xxlJobLogReportDao.queryLogReportTodayTotal();
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (xxlJobLogReport != null) {
@@ -381,7 +375,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 			result.put("todayFailCount", xxlJobLogReport.getFailCount());
 			result.put("todaySuccessCount", xxlJobLogReport.getSucCount());
 		}
-		return result;
+		return new ReturnT<Map<String, Object>>(result);
 	}
 
 	@Override
@@ -401,6 +395,60 @@ public class XxlJobServiceImpl implements XxlJobService {
 			stop(s.getId());
 		});
 		return ReturnT.SUCCESS;
+	}
+
+	@Override
+	public ReturnT<List<Map<String, Object>>> monitorJobTypeInfo() {
+		List<Map<String, Object>> result = new ArrayList<>(16);
+		List<XxlJobInfo> list = xxlJobInfoDao.getJobs();
+		Map<Integer,String> jobType = new HashMap<>(16);
+		jobType.put(1,"Kettle作业");
+		jobType.put(2,"Kettle转换");
+		jobType.put(3,"普通作业");
+		jobType.forEach((k,v)->{
+			Map<String,Object> jobTypeMap = new HashMap<>(16);
+			jobTypeMap.put("类型",jobType.get(k));
+			jobTypeMap.put("数量",list.stream().filter(s->k.equals(s.getObjectType())).count());
+			result.add(jobTypeMap);
+		});
+		return new ReturnT<>(result);
+	}
+
+	@Override
+	public ReturnT<List<Map<String, Object>>> monitorJobExecInfo() {
+		List<Map<String, Object>> result = new ArrayList<>(16);
+		int jobLogSuccessCount = 0;
+		int jobLogFailCount = 0;
+		int jobRunningCount = 0;
+		XxlJobLogReport xxlJobLogReport = xxlJobLogReportDao.queryLogReportTotal();
+		if (xxlJobLogReport != null) {
+			jobLogSuccessCount = xxlJobLogReport.getSucCount();
+			jobLogFailCount = xxlJobLogReport.getFailCount();
+			jobRunningCount = xxlJobLogReport.getRunningCount();
+		}
+		Map<Integer,String> type = new HashMap<>(16);
+		type.put(1,"成功次数");
+		type.put(2,"失败次数");
+		type.put(3,"运行中");
+		int finalJobLogSuccessCount = jobLogSuccessCount;
+		int finalJobLogFailCount = jobLogFailCount;
+		int finalJobRunningCount = jobRunningCount;
+		type.forEach((k, v)->{
+			Map<String,Object> jobTypeMap = new HashMap<>(16);
+			jobTypeMap.put("类型",type.get(k));
+			if(1==k){
+				jobTypeMap.put("数量", finalJobLogSuccessCount);
+			}
+			if(2==k){
+				jobTypeMap.put("数量", finalJobLogFailCount);
+			}
+			if(3==k){
+				jobTypeMap.put("数量", finalJobRunningCount);
+			}
+
+			result.add(jobTypeMap);
+		});
+		return new ReturnT<>(result);
 	}
 
 }

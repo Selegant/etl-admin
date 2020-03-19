@@ -5,6 +5,7 @@ import com.selegant.xxljob.core.model.XxlJobLog;
 import com.selegant.xxljob.dao.XxlJobInfoDao;
 import com.selegant.xxljob.dao.XxlJobLogDao;
 import com.selegant.xxljob.service.XxlJobService;
+import com.xxl.job.core.biz.model.ReturnT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,13 +33,23 @@ public class MonitorController {
     @Autowired
     private XxlJobInfoDao xxlJobInfoDao;
 
-    @RequestMapping()
-    public String index(Model model) {
+    @RequestMapping("monitorInfo")
+    @ResponseBody
+    public ReturnT<Map<String, Object>> index() {
+        return xxlJobService.monitorInfo();
+    }
 
-        Map<String, Object> dashboardMap = xxlJobService.monitorInfo();
-        model.addAllAttributes(dashboardMap);
 
-        return "monitor/monitor.index";
+    @RequestMapping("monitorJobTypeInfo")
+    @ResponseBody
+    public ReturnT<List<Map<String, Object>>> monitorJobTypeInfo() {
+        return xxlJobService.monitorJobTypeInfo();
+    }
+
+    @RequestMapping("monitorJobExecInfo")
+    @ResponseBody
+    public ReturnT<List<Map<String, Object>>> monitorJobExecInfo() {
+        return xxlJobService.monitorJobExecInfo();
     }
 
 
@@ -48,8 +59,8 @@ public class MonitorController {
                                                @RequestParam(required = false, defaultValue = "0") int start,
                                                @RequestParam(required = false, defaultValue = "10") int length) {
 
-        List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, -1, -1, "", "", "");
-        int list_count = xxlJobInfoDao.pageListCount(start, length, -1, -1, "", "", "");
+        List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, -1, -1, "", "", "",null);
+        int list_count = xxlJobInfoDao.pageListCount(start, length, -1, -1, "", "", "",null);
         List<Map<String,Object>> results = new ArrayList<>();
         list.forEach(s->{
             List<XxlJobLog> logs = xxlJobLogDao.monitorList(s.getId());

@@ -39,6 +39,25 @@ public class XxlJobInfo {
 	private long triggerLastTime;	// 上次调度时间
 	private long triggerNextTime;	// 下次调度时间
 
+	private String objectId;  //对应Kettle任务ID
+	private int objectType; //调度任务类型
+
+
+	public String getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(String objectId) {
+		this.objectId = objectId;
+	}
+
+	public int getObjectType() {
+		return objectType;
+	}
+
+	public void setObjectType(int objectType) {
+		this.objectType = objectType;
+	}
 
 	public int getId() {
 		return id;

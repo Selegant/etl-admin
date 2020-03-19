@@ -33,6 +33,8 @@
 		<result column="trigger_status" property="triggerStatus" />
 		<result column="trigger_last_time" property="triggerLastTime" />
 		<result column="trigger_next_time" property="triggerNextTime" />
+		<result column="object_id" property="objectId" />
+		<result column="object_type" property="objectType" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -57,7 +59,9 @@
 		t.child_jobid,
 		t.trigger_status,
 		t.trigger_last_time,
-		t.trigger_next_time
+		t.trigger_next_time,
+		t.object_id,
+		t.object_type
 	</sql>
 
 	<select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
@@ -78,6 +82,9 @@
 			</if>
 			<if test="author != null and author != ''">
 				AND t.author like CONCAT(CONCAT('%', #{author}), '%')
+			</if>
+			<if test="objectType != null and objectType != ''">
+				AND t.object_type = #{objectType}
 			</if>
 		</trim>
 		ORDER BY id DESC
@@ -102,6 +109,9 @@
 			</if>
 			<if test="author != null and author != ''">
 				AND t.author like CONCAT(CONCAT('%', #{author}), '%')
+			</if>
+			<if test="objectType != null and objectType != ''">
+				AND t.object_type = #{objectType}
 			</if>
 		</trim>
 	</select>
@@ -207,6 +217,11 @@
 		FROM xxl_job_info
 	</select>
 
+	<select id="findTypeCount" resultType="int" parameterType="java.util.HashMap">
+		SELECT count(1)
+		FROM xxl_job_info
+		WHERE object_type = #{objectType}
+	</select>
 
 	<select id="scheduleJobQuery" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
 		SELECT <include refid="Base_Column_List" />

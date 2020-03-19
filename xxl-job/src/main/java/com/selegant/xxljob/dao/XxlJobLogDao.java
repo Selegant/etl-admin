@@ -72,4 +72,6 @@ public interface XxlJobLogDao {
 
 	public List<XxlJobLog> monitorList(@Param("jobId") int jobId);
 
+	public List<XxlJobLog> getMonitorLogInfo(@Param("start")Date start,@Param("end")Date end);
+
 }
