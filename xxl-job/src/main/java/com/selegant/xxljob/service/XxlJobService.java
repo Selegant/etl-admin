@@ -113,4 +113,24 @@ public interface XxlJobService {
 	 * @return
 	 */
 	ReturnT<List<Map<String, Object>>> monitorJobExecInfo();
+
+	/**
+	 * 获取任务执行情况
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	ReturnT<Map<String, Object>> monitorTaskExecInfo(String startDate, String endDate, String jobId);
+
+	/**
+	 * 获取任务列表
+	 * @return
+	 */
+	ReturnT<List<XxlJobInfo>> list();
+
+	/**
+	 * 获取作业状态情况
+	 * @return
+	 */
+	ReturnT<List<Map<String, Object>>> monitorJobStatusInfo();
 }

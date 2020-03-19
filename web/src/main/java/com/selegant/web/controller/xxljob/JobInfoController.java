@@ -105,6 +105,13 @@ public class JobInfoController {
 		return xxlJobService.pageList(pageNo, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType);
 	}
 
+
+	@RequestMapping("/list")
+	@ResponseBody
+	public ReturnT<List<XxlJobInfo>> list() {
+		return xxlJobService.list();
+	}
+
 	@RequestMapping("/add")
 	@ResponseBody
 	public ReturnT<String> add(@RequestBody XxlJobInfo jobInfo) {

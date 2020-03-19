@@ -2,6 +2,7 @@ package com.selegant.xxljob.service.impl;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.selegant.xxljob.core.cron.CronExpression;
 import com.selegant.xxljob.core.model.XxlJobGroup;
 import com.selegant.xxljob.core.model.XxlJobInfo;
@@ -448,6 +449,77 @@ public class XxlJobServiceImpl implements XxlJobService {
 
 			result.add(jobTypeMap);
 		});
+		return new ReturnT<>(result);
+	}
+
+	@Override
+	public ReturnT<Map<String, Object>> monitorTaskExecInfo(String startDate, String endDate, String jobId) {
+		Map<String, Object> result = new HashMap<>(16);
+		List<Map<String, Object>> monitorTaskInfos = new ArrayList<>(16);
+		Date start = cn.hutool.core.date.DateUtil.parse(startDate, DatePattern.NORM_DATE_PATTERN);
+		Date end = cn.hutool.core.date.DateUtil.parse(endDate, DatePattern.NORM_DATE_PATTERN);
+
+		List<XxlJobLog> xxlJobLogs = xxlJobLogDao.getMonitorLogInfo(start,end);
+
+		List<XxlJobInfo> jobInfos = xxlJobInfoDao.getJobs();
+		if (StrUtil.isBlank(jobId)){
+			jobInfos.forEach(xxlJobInfo -> {
+				Map<String, Object> resultMap = new HashMap<>(16);
+				resultMap.put("作业",xxlJobInfo.getJobDesc());
+				List<XxlJobLog> logs = xxlJobLogs.stream().filter(s->s.getJobId()== xxlJobInfo.getId()).collect(Collectors.toList());
+				int triggerDayCountRunning = 0;
+				int triggerDayCountSuc = 0;
+				int triggerDayCountFail = 0;
+				if (!logs.isEmpty()) {
+					triggerDayCountRunning = Math.toIntExact(logs.stream().filter(s -> 0 == s.getHandleCode()).count());
+					triggerDayCountSuc = Math.toIntExact(logs.stream().filter(s -> 200 == s.getHandleCode()).count());
+					triggerDayCountFail = Math.toIntExact(logs.stream().filter(s -> 500 == s.getHandleCode()).count());
+				}
+				resultMap.put("成功次数",triggerDayCountSuc);
+				resultMap.put("失败次数",triggerDayCountFail);
+				resultMap.put("运行中",triggerDayCountRunning);
+				monitorTaskInfos.add(resultMap);
+			});
+		}else {
+			XxlJobInfo xxlJobInfo = jobInfos.stream().filter(s->Integer.parseInt(jobId) == s.getId()).findFirst().get();
+			Map<String, Object> resultMap = new HashMap<>(16);
+			resultMap.put("作业",xxlJobInfo.getJobDesc());
+			List<XxlJobLog> logs = xxlJobLogs.stream().filter(s->s.getJobId()==xxlJobInfo.getId()).collect(Collectors.toList());
+			int triggerDayCountRunning = 0;
+			int triggerDayCountSuc = 0;
+			int triggerDayCountFail = 0;
+			if (!logs.isEmpty()) {
+				triggerDayCountRunning = Math.toIntExact(logs.stream().filter(s -> 0 == s.getHandleCode()).count());
+				triggerDayCountSuc = Math.toIntExact(logs.stream().filter(s -> 200 == s.getHandleCode()).count());
+				triggerDayCountFail = Math.toIntExact(logs.stream().filter(s -> 500 == s.getHandleCode()).count());
+			}
+			resultMap.put("成功次数",triggerDayCountSuc);
+			resultMap.put("失败次数",triggerDayCountFail);
+			resultMap.put("运行中",triggerDayCountRunning);
+			monitorTaskInfos.add(resultMap);
+			result.put("monitorTaskTable",logs.stream().filter(s -> 500 == s.getHandleCode()).collect(Collectors.toList()));
+		}
+		result.put("chartInfo",monitorTaskInfos);
+		return new ReturnT<>(result);
+	}
+
+	@Override
+	public ReturnT<List<XxlJobInfo>> list() {
+		return new ReturnT<>(xxlJobInfoDao.getJobs());
+	}
+
+	@Override
+	public ReturnT<List<Map<String, Object>>> monitorJobStatusInfo() {
+		List<Map<String, Object>> result = new ArrayList<>(16);
+		List<XxlJobInfo> jobInfos = xxlJobInfoDao.getJobs();
+		Map<String,Object> stopMap = new HashMap<>(16);
+		stopMap.put("运行状态","停止");
+		stopMap.put("数量",jobInfos.stream().filter(s->s.getTriggerStatus()==0).count());
+		Map<String,Object> runMap = new HashMap<>(16);
+		runMap.put("运行状态","运行");
+		runMap.put("数量",jobInfos.stream().filter(s->s.getTriggerStatus()==1).count());
+		result.add(stopMap);
+		result.add(runMap);
 		return new ReturnT<>(result);
 	}
 

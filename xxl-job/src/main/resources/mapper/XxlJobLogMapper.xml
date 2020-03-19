@@ -308,7 +308,7 @@
         WHERE t.job_id = #{jobId}
 	</select>
     <select id="getMonitorLogInfo" resultMap="XxlJobLog" parameterType="java.util.Map">
-		SELECT t.handle_code,t.trigger_code,t.handle_time,t.trigger_time
+		SELECT t.handle_code,t.trigger_code,t.handle_time,t.trigger_time,t.job_id
 			FROM xxl_job_log AS t
 			WHERE t.trigger_time between #{start} and #{end}
 	</select>

@@ -46,10 +46,22 @@ public class MonitorController {
         return xxlJobService.monitorJobTypeInfo();
     }
 
+    @RequestMapping("monitorJobStatusInfo")
+    @ResponseBody
+    public ReturnT<List<Map<String, Object>>> monitorJobStatusInfo() {
+        return xxlJobService.monitorJobStatusInfo();
+    }
+
     @RequestMapping("monitorJobExecInfo")
     @ResponseBody
     public ReturnT<List<Map<String, Object>>> monitorJobExecInfo() {
         return xxlJobService.monitorJobExecInfo();
+    }
+
+    @RequestMapping("/monitorTaskExecInfo")
+    @ResponseBody
+    public ReturnT<Map<String, Object>> monitorTaskExecInfo(String startDate, String endDate, String jobId) {
+        return xxlJobService.monitorTaskExecInfo(startDate, endDate, jobId);
     }
 
 
