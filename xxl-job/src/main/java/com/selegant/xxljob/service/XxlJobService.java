@@ -133,4 +133,12 @@ public interface XxlJobService {
 	 * @return
 	 */
 	ReturnT<List<Map<String, Object>>> monitorJobStatusInfo();
+
+	/**
+	 * 批量修改Cron
+	 * @param ids
+	 * @param cron
+	 * @return
+	 */
+	ReturnT<String> batchUpdateCron(String ids, String cron);
 }

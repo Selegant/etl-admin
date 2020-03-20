@@ -182,27 +182,68 @@
 
 	<update id="update" parameterType="com.selegant.xxljob.core.model.XxlJobInfo" >
 		UPDATE xxl_job_info
-		SET
-			job_group = #{jobGroup},
-			job_cron = #{jobCron},
-			job_desc = #{jobDesc},
-			update_time = #{updateTime},
-			author = #{author},
-			alarm_email = #{alarmEmail},
-			executor_route_strategy = #{executorRouteStrategy},
-			executor_handler = #{executorHandler},
-			executor_param = #{executorParam},
-			executor_block_strategy = #{executorBlockStrategy},
-			executor_timeout = ${executorTimeout},
-			executor_fail_retry_count = ${executorFailRetryCount},
-			glue_type = #{glueType},
-			glue_source = #{glueSource},
-			glue_remark = #{glueRemark},
-			glue_updatetime = #{glueUpdatetime},
-			child_jobid = #{childJobId},
-			trigger_status = #{triggerStatus},
-			trigger_last_time = #{triggerLastTime},
-			trigger_next_time = #{triggerNextTime}
+		<set>
+			<if test="jobGroup != null">
+				job_group = #{jobGroup},
+			</if>
+			<if test="jobCron != null and jobCron != ''">
+				job_cron = #{jobCron},
+			</if>
+			<if test="jobDesc != null and jobDesc != ''">
+				job_desc = #{jobDesc},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+			<if test="author != null and author != ''">
+				author = #{author},
+			</if>
+			<if test="alarmEmail != null and alarmEmail != ''">
+				alarm_email = #{alarmEmail},
+			</if>
+			<if test="executorRouteStrategy != null and executorRouteStrategy != ''">
+				executor_route_strategy = #{executorRouteStrategy},
+			</if>
+			<if test="executorHandler != null and executorHandler != ''">
+				executor_handler = #{executorHandler},
+			</if>
+			<if test="executorParam != null and executorParam != ''">
+				executor_param = #{executorParam},
+			</if>
+			<if test="executorBlockStrategy != null and executorBlockStrategy != ''">
+				executor_block_strategy = #{executorBlockStrategy},
+			</if>
+			<if test="executorTimeout != null">
+				executor_timeout = ${executorTimeout},
+			</if>
+			<if test="executorFailRetryCount != null">
+				executor_fail_retry_count = ${executorFailRetryCount},
+			</if>
+			<if test="glueType != null and glueType != ''">
+				glue_type = #{glueType},
+			</if>
+			<if test="glueSource != null and glueSource != ''">
+				glue_source = #{glueSource},
+			</if>
+			<if test="glueRemark != null and glueRemark != ''">
+				glue_remark = #{glueRemark},
+			</if>
+			<if test="glueUpdatetime != null">
+				glue_updatetime = #{glueUpdatetime},
+			</if>
+			<if test="childJobId != null and childJobId != ''">
+				child_jobid = #{childJobId},
+			</if>
+			<if test="triggerStatus != null">
+				trigger_status = #{triggerStatus},
+			</if>
+			<if test="triggerLastTime != null">
+				trigger_last_time = #{triggerLastTime},
+			</if>
+			<if test="triggerNextTime != null">
+				trigger_next_time = #{triggerNextTime}
+			</if>
+		</set>
 		WHERE id = #{id}
 	</update>
 

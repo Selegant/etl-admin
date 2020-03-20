@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.common.mapper.EtlCronMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.common.model.EtlCron">
+    <!--@mbg.generated-->
+    <!--@Table etl_cron-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cron" jdbcType="VARCHAR" property="cron" />
+    <result column="cron_desc" jdbcType="VARCHAR" property="cronDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, cron, cron_desc
+  </sql>
+</mapper>

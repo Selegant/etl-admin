@@ -126,6 +126,14 @@ public class JobInfoController {
 		return xxlJobService.update(jobInfo);
 	}
 
+	@RequestMapping("/batchUpdateCron")
+	@ResponseBody
+	public ReturnT<String> batchUpdateCron(@RequestBody Map<String,String> params) {
+		String ids = params.get("ids");
+		String cron = params.get("cron");
+		return xxlJobService.batchUpdateCron(ids,cron);
+	}
+
 	@RequestMapping("/remove")
 	@ResponseBody
 	public ReturnT<String> remove(int id) {

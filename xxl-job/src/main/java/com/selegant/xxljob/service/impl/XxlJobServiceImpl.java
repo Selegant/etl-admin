@@ -523,4 +523,27 @@ public class XxlJobServiceImpl implements XxlJobService {
 		return new ReturnT<>(result);
 	}
 
+	@Override
+	public ReturnT<String> batchUpdateCron(String ids, String cron) {
+		if(StrUtil.isBlank(ids)){
+			return ReturnT.FAIL;
+		}
+		String[] strings = null;
+		if(ids.contains(",")){
+			strings = ids.split(",");
+		}else {
+			XxlJobInfo xxlJobInfo = new XxlJobInfo();
+			xxlJobInfo.setId(Integer.parseInt(ids));
+			xxlJobInfo.setJobCron(cron);
+			xxlJobInfoDao.update(xxlJobInfo);
+		}
+		for (String id : strings) {
+			XxlJobInfo xxlJobInfo = new XxlJobInfo();
+			xxlJobInfo.setId(Integer.parseInt(id));
+			xxlJobInfo.setJobCron(cron);
+			xxlJobInfoDao.update(xxlJobInfo);
+		}
+		return ReturnT.SUCCESS;
+	}
+
 }
