@@ -22,14 +22,16 @@ public interface XxlJobLogDao {
                                     @Param("jobId") int jobId,
                                     @Param("triggerTimeStart") Date triggerTimeStart,
                                     @Param("triggerTimeEnd") Date triggerTimeEnd,
-                                    @Param("logStatus") int logStatus);
+                                    @Param("logStatus") int logStatus,
+									@Param("readMark") int readMark);
 	public int pageListCount(@Param("offset") int offset,
                              @Param("pagesize") int pagesize,
                              @Param("jobGroup") int jobGroup,
                              @Param("jobId") int jobId,
                              @Param("triggerTimeStart") Date triggerTimeStart,
                              @Param("triggerTimeEnd") Date triggerTimeEnd,
-                             @Param("logStatus") int logStatus);
+                             @Param("logStatus") int logStatus,
+							 @Param("readMark") int readMark);
 
 	public XxlJobLog load(@Param("id") long id);
 
@@ -38,6 +40,8 @@ public interface XxlJobLogDao {
 	public int updateTriggerInfo(XxlJobLog xxlJobLog);
 
 	public int updateHandleInfo(XxlJobLog xxlJobLog);
+
+	int updateReadMark(XxlJobLog xxlJobLog);
 
 	public int delete(@Param("jobId") int jobId);
 

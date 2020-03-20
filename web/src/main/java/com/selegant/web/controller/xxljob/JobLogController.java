@@ -92,7 +92,8 @@ public class JobLogController {
                                         @RequestParam(defaultValue = "0") int jobGroup,
 										@RequestParam(defaultValue = "0") int jobId,
 										@RequestParam(defaultValue = "-1")int logStatus,
-										@RequestParam(required = false, value = "filterTime[]")String filterTime[]) {
+										@RequestParam(required = false, value = "filterTime[]")String filterTime[],
+										@RequestParam(required = false,defaultValue = "-1") int readMark) {
 
 		// valid permission
 //		JobInfoController.validPermission(request, jobGroup);	// 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
@@ -115,8 +116,13 @@ public class JobLogController {
 		int start = (pageNo-1) * pageSize;
 		int length = start + pageSize;
 		// page query
-		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
-		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
+		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
+
+		List<XxlJobInfo> xxlJobInfos = xxlJobInfoDao.getJobs();
+		list.forEach(s->{
+			s.setJobDesc(xxlJobInfos.stream().filter(x->x.getId()==s.getJobId()).findFirst().get().getJobDesc());
+		});
 
 		// package result
 		Map<String, Object> maps = new HashMap<>(16);
@@ -250,4 +256,13 @@ public class JobLogController {
 		return new ReturnT<Integer>(xxlJobLogDao.getUnReadCount());
 	}
 
+	@RequestMapping("/readLog")
+	@ResponseBody
+	public ReturnT<String> readLog(Long logId){
+		XxlJobLog xxlJobLog = new XxlJobLog();
+		xxlJobLog.setId(logId);
+		xxlJobLog.setReadMark(ReadMark.HAVE_READ);
+		xxlJobLogDao.updateReadMark(xxlJobLog);
+		return ReturnT.SUCCESS;
+	}
 }

@@ -42,6 +42,8 @@ public class XxlJobLog {
 	// 已读状态
 	private int readMark;
 
+	private String jobDesc;
+
 	public long getId() {
 		return id;
 	}
@@ -168,5 +170,13 @@ public class XxlJobLog {
 
 	public void setReadMark(int readMark) {
 		this.readMark = readMark;
+	}
+
+	public String getJobDesc() {
+		return jobDesc;
+	}
+
+	public void setJobDesc(String jobDesc) {
+		this.jobDesc = jobDesc;
 	}
 }
