@@ -74,4 +74,5 @@ public interface XxlJobLogDao {
 
 	public List<XxlJobLog> getMonitorLogInfo(@Param("start")Date start,@Param("end")Date end);
 
+	int getUnReadCount();
 }

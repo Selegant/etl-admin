@@ -24,6 +24,7 @@
 	    <result column="handle_msg" property="handleMsg" />
 
 		<result column="alarm_status" property="alarmStatus" />
+		<result column="read_mark" property="readMark"/>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -41,7 +42,8 @@
 		t.handle_time,
 		t.handle_code,
 		t.handle_msg,
-		t.alarm_status
+		t.alarm_status,
+		t.read_mark
 	</sql>
 
 	<select id="pageList" resultMap="XxlJobLog">
@@ -146,7 +148,8 @@
 			`executor_handler`=#{executorHandler},
 			`executor_param`= #{executorParam},
 			`executor_sharding_param`= #{executorShardingParam},
-			`executor_fail_retry_count`= #{executorFailRetryCount}
+			`executor_fail_retry_count`= #{executorFailRetryCount},
+			`read_mark`= #{readMark}
 		WHERE `id`= #{id}
 	</update>
 
@@ -155,7 +158,8 @@
 		SET
 			`handle_time`= #{handleTime},
 			`handle_code`= #{handleCode},
-			`handle_msg`= #{handleMsg}
+			`handle_msg`= #{handleMsg},
+			`read_mark`= #{readMark}
 		WHERE `id`= #{id}
 	</update>
 
@@ -311,6 +315,9 @@
 		SELECT t.handle_code,t.trigger_code,t.handle_time,t.trigger_time,t.job_id
 			FROM xxl_job_log AS t
 			WHERE t.trigger_time between #{start} and #{end}
+	</select>
+	<select id="getUnReadCount" resultType="int">
+		select count(*) from xxl_job_log where read_mark = 1
 	</select>
 
 </mapper>

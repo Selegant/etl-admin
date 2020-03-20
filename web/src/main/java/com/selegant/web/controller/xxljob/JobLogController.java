@@ -2,6 +2,7 @@ package com.selegant.web.controller.xxljob;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.ObjectUtil;
+import com.selegant.xxljob.core.constant.ReadMark;
 import com.selegant.xxljob.core.exception.XxlJobException;
 import com.selegant.xxljob.core.model.XxlJobGroup;
 import com.selegant.xxljob.core.model.XxlJobInfo;
@@ -193,6 +194,7 @@ public class JobLogController {
 
 		if (ReturnT.SUCCESS_CODE == runResult.getCode()) {
 			log.setHandleCode(ReturnT.FAIL_CODE);
+			log.setReadMark(ReadMark.UN_READ);
 			log.setHandleMsg( I18nUtil.getString("joblog_kill_log_byman")+":" + (runResult.getMsg()!=null?runResult.getMsg():""));
 			log.setHandleTime(new Date());
 			xxlJobLogDao.updateHandleInfo(log);
@@ -239,6 +241,13 @@ public class JobLogController {
 		} while (logIds!=null && logIds.size()>0);
 
 		return ReturnT.SUCCESS;
+	}
+
+
+	@RequestMapping("/getUnReadCount")
+	@ResponseBody
+	public ReturnT<Integer> getUnReadCount(){
+		return new ReturnT<Integer>(xxlJobLogDao.getUnReadCount());
 	}
 
 }

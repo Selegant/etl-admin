@@ -1,6 +1,7 @@
 package com.selegant.xxljob.core.trigger;
 
 import com.selegant.xxljob.core.conf.XxlJobAdminConfig;
+import com.selegant.xxljob.core.constant.ReadMark;
 import com.selegant.xxljob.core.model.XxlJobGroup;
 import com.selegant.xxljob.core.model.XxlJobInfo;
 import com.selegant.xxljob.core.model.XxlJobLog;
@@ -177,6 +178,10 @@ public class XxlJobTrigger {
         jobLog.setExecutorFailRetryCount(finalFailRetryCount);
         //jobLog.setTriggerTime();
         jobLog.setTriggerCode(triggerResult.getCode());
+        // 任务执行失败添加未读标志
+        if (ReturnT.FAIL_CODE == triggerResult.getCode()){
+            jobLog.setReadMark(ReadMark.UN_READ);
+        }
         jobLog.setTriggerMsg(triggerMsgSb.toString());
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateTriggerInfo(jobLog);
 

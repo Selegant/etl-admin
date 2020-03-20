@@ -34,7 +34,11 @@ public class DemoJobHandler extends IJobHandler {
 			XxlJobLogger.log("beat at:" + i);
 			TimeUnit.SECONDS.sleep(2);
 		}
-		return SUCCESS;
+		if ("1".equals(param)){
+			return SUCCESS;
+		}else {
+			return FAIL;
+		}
 	}
 
 }

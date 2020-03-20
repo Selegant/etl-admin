@@ -39,6 +39,9 @@ public class XxlJobLog {
 	// alarm info
 	private int alarmStatus;
 
+	// 已读状态
+	private int readMark;
+
 	public long getId() {
 		return id;
 	}
@@ -159,4 +162,11 @@ public class XxlJobLog {
 		this.alarmStatus = alarmStatus;
 	}
 
+	public int getReadMark() {
+		return readMark;
+	}
+
+	public void setReadMark(int readMark) {
+		this.readMark = readMark;
+	}
 }

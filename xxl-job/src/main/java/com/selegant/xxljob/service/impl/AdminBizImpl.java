@@ -1,5 +1,6 @@
 package com.selegant.xxljob.service.impl;
 
+import com.selegant.xxljob.core.constant.ReadMark;
 import com.selegant.xxljob.core.model.XxlJobInfo;
 import com.selegant.xxljob.core.model.XxlJobLog;
 import com.selegant.xxljob.core.thread.JobTriggerPoolHelper;
@@ -110,6 +111,9 @@ public class AdminBizImpl implements AdminBiz {
         // success, save log
         log.setHandleTime(new Date());
         log.setHandleCode(handleCallbackParam.getExecuteResult().getCode());
+        if(ReturnT.FAIL_CODE == handleCallbackParam.getExecuteResult().getCode()){
+            log.setReadMark(ReadMark.UN_READ);
+        }
         log.setHandleMsg(handleMsg.toString());
         xxlJobLogDao.updateHandleInfo(log);
 
