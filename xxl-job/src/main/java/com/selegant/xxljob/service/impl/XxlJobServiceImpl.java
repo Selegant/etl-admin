@@ -52,7 +52,6 @@ public class XxlJobServiceImpl implements XxlJobService {
 		// page list
 		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
 		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
-
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
 		maps.put("pageNo",pageNo);
@@ -542,6 +541,40 @@ public class XxlJobServiceImpl implements XxlJobService {
 			xxlJobInfo.setId(Integer.parseInt(id));
 			xxlJobInfo.setJobCron(cron);
 			xxlJobInfoDao.update(xxlJobInfo);
+		}
+		return ReturnT.SUCCESS;
+	}
+
+	@Override
+	public ReturnT<String> startBatch(String jobIds) {
+		if(StrUtil.isBlank(jobIds)){
+			return ReturnT.FAIL;
+		}
+		String[] strings = null;
+		if(jobIds.contains(",")){
+			strings = jobIds.split(",");
+		}else {
+			return start(Integer.parseInt(jobIds));
+		}
+		for (String id : strings) {
+			start(Integer.parseInt(id));
+		}
+		return ReturnT.SUCCESS;
+	}
+
+	@Override
+	public ReturnT<String> stopBatch(String jobIds) {
+		if(StrUtil.isBlank(jobIds)){
+			return ReturnT.FAIL;
+		}
+		String[] strings = null;
+		if(jobIds.contains(",")){
+			strings = jobIds.split(",");
+		}else {
+			return stop(Integer.parseInt(jobIds));
+		}
+		for (String id : strings) {
+			stop(Integer.parseInt(id));
 		}
 		return ReturnT.SUCCESS;
 	}

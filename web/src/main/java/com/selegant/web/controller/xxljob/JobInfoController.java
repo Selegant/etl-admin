@@ -197,4 +197,17 @@ public class JobInfoController {
 	public ReturnT<String> stopAll() {
 		return xxlJobService.stopAll();
 	}
+
+	@RequestMapping("/startBatch")
+	@ResponseBody
+	public ReturnT<String> startBatch(String jobIds) {
+		return xxlJobService.startBatch(jobIds);
+	}
+
+
+	@RequestMapping("/stopBatch")
+	@ResponseBody
+	public ReturnT<String> stopBatch(String jobIds) {
+		return xxlJobService.stopBatch(jobIds);
+	}
 }

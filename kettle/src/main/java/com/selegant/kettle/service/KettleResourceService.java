@@ -338,9 +338,9 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
      */
     private boolean syncNewResourceToXxlJob(List<KettleResource> list){
         XxlJobGroup xxlJobGroup = new XxlJobGroup();
-        xxlJobGroup.setAppName("xxl-job-kettle");
+        xxlJobGroup.setAppName("kettle-job");
         QueryWrapper<XxlJobGroup> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("app_name","xxl-job-kettle");
+        queryWrapper.eq("app_name","kettle-job");
         XxlJobGroup finalXxlJobGroup  = xxlJobGroupMapper.selectOne(queryWrapper);
 //        List<XxlJobInfo> jobInfoList = new ArrayList<>();
         list.forEach(s->{

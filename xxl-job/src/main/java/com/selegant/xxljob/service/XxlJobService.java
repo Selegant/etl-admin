@@ -141,4 +141,18 @@ public interface XxlJobService {
 	 * @return
 	 */
 	ReturnT<String> batchUpdateCron(String ids, String cron);
+
+	/**
+	 * 批量启动任务
+	 * @param jobIds
+	 * @return
+	 */
+	ReturnT<String> startBatch(String jobIds);
+
+	/**
+	 * 批量停止任务
+	 * @param jobIds
+	 * @return
+	 */
+	ReturnT<String> stopBatch(String jobIds);
 }

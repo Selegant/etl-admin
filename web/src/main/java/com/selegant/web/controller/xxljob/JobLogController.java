@@ -168,7 +168,7 @@ public class JobLogController {
                     logResult.getContent().setEnd(true);
                 }
             }
-
+			logResult.getContent().setLogContent(logResult.getContent().getLogContent().replace("\n","<br/>"));
 			return logResult;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

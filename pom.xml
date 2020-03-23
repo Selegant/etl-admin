@@ -29,7 +29,7 @@
 		<module>xxl-job</module>
 		<module>datax</module>
 		<module>common</module>
-		<module>executor</module>
+		<module>kettle-job</module>
 		<module>kettle</module>
 	</modules>
 

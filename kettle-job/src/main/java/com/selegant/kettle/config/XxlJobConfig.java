@@ -1,4 +1,4 @@
-package com.selegant.executor.config;
+package com.selegant.kettle.config;
 
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import org.slf4j.Logger;

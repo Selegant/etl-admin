@@ -1,4 +1,4 @@
-package com.selegant.executor.handler;
+package com.selegant.kettle.handler;
 
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
