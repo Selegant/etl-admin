@@ -2,6 +2,7 @@ package com.selegant.web.controller.xxljob;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.selegant.xxljob.core.constant.ReadMark;
 import com.selegant.xxljob.core.exception.XxlJobException;
 import com.selegant.xxljob.core.model.XxlJobGroup;
@@ -265,4 +266,31 @@ public class JobLogController {
 		xxlJobLogDao.updateReadMark(xxlJobLog);
 		return ReturnT.SUCCESS;
 	}
+
+	@RequestMapping("/readBatchLog")
+	@ResponseBody
+	public ReturnT<String> readBatchLog(String logIds){
+		if(StrUtil.isBlank(logIds)){
+			return ReturnT.FAIL;
+		}
+		String[] strings = null;
+		if(logIds.contains(",")){
+			strings = logIds.split(",");
+		}else {
+			XxlJobLog xxlJobLog = new XxlJobLog();
+			xxlJobLog.setId(Integer.parseInt(logIds));
+			xxlJobLog.setReadMark(ReadMark.HAVE_READ);
+			xxlJobLogDao.updateReadMark(xxlJobLog);
+			return ReturnT.SUCCESS;
+		}
+		for (String id : strings) {
+			XxlJobLog xxlJobLog = new XxlJobLog();
+			xxlJobLog.setId(Integer.parseInt(id));
+			xxlJobLog.setReadMark(ReadMark.HAVE_READ);
+			xxlJobLogDao.updateReadMark(xxlJobLog);
+		}
+		return ReturnT.SUCCESS;
+	}
+
+
 }

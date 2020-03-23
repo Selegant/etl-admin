@@ -347,15 +347,15 @@ public class XxlJobServiceImpl implements XxlJobService {
 		for (int i = 0; i < days ; i++) {
 			Date nowDate = DateUtil.offsetDay(start,i);
 			logger.info(DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN));
-			List<XxlJobLog> dayList = list.stream().filter(s->DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN).equals(DateUtil.format(s.getHandleTime(),DatePattern.NORM_DATE_PATTERN))).collect(Collectors.toList());
+			List<XxlJobLog> dayList = list.stream().filter(s->DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN).equals(DateUtil.format(s.getTriggerTime(),DatePattern.NORM_DATE_PATTERN))).collect(Collectors.toList());
 			int triggerDayCountRunning = 0;
 			int triggerDayCountSuc = 0;
 			int triggerDayCountFail = 0;
 			Map<String,Object> triggerMap = new HashMap<>(16);
 			if (!dayList.isEmpty()) {
-				triggerDayCountRunning = Math.toIntExact(dayList.stream().filter(s -> 0 == s.getHandleCode()).count());
+				triggerDayCountRunning = Math.toIntExact(dayList.stream().filter(s -> 0 == s.getHandleCode() && 500 != s.getTriggerCode()).count());
 				triggerDayCountSuc = Math.toIntExact(dayList.stream().filter(s -> 200 == s.getHandleCode()).count());
-				triggerDayCountFail = Math.toIntExact(dayList.stream().filter(s -> 500 == s.getHandleCode()).count());
+				triggerDayCountFail = Math.toIntExact(dayList.stream().filter(s -> 500 == s.getHandleCode()  || 500 == s.getTriggerCode()).count());
 			}
 			triggerMap.put("日期",DateUtil.format(nowDate,DatePattern.NORM_DATE_PATTERN));
 			triggerMap.put("成功次数",triggerDayCountSuc);
@@ -471,9 +471,9 @@ public class XxlJobServiceImpl implements XxlJobService {
 				int triggerDayCountSuc = 0;
 				int triggerDayCountFail = 0;
 				if (!logs.isEmpty()) {
-					triggerDayCountRunning = Math.toIntExact(logs.stream().filter(s -> 0 == s.getHandleCode()).count());
+					triggerDayCountRunning = Math.toIntExact(logs.stream().filter(s -> 0 == s.getHandleCode() && 500 != s.getTriggerCode()).count());
 					triggerDayCountSuc = Math.toIntExact(logs.stream().filter(s -> 200 == s.getHandleCode()).count());
-					triggerDayCountFail = Math.toIntExact(logs.stream().filter(s -> 500 == s.getHandleCode()).count());
+					triggerDayCountFail = Math.toIntExact(logs.stream().filter(s -> 500 == s.getHandleCode()  || 500 == s.getTriggerCode()).count());
 				}
 				resultMap.put("成功次数",triggerDayCountSuc);
 				resultMap.put("失败次数",triggerDayCountFail);
@@ -489,9 +489,9 @@ public class XxlJobServiceImpl implements XxlJobService {
 			int triggerDayCountSuc = 0;
 			int triggerDayCountFail = 0;
 			if (!logs.isEmpty()) {
-				triggerDayCountRunning = Math.toIntExact(logs.stream().filter(s -> 0 == s.getHandleCode()).count());
+				triggerDayCountRunning = Math.toIntExact(logs.stream().filter(s -> 0 == s.getHandleCode() && 500 != s.getTriggerCode()).count());
 				triggerDayCountSuc = Math.toIntExact(logs.stream().filter(s -> 200 == s.getHandleCode()).count());
-				triggerDayCountFail = Math.toIntExact(logs.stream().filter(s -> 500 == s.getHandleCode()).count());
+				triggerDayCountFail = Math.toIntExact(logs.stream().filter(s -> 500 == s.getHandleCode()  || 500 == s.getTriggerCode()).count());
 			}
 			resultMap.put("成功次数",triggerDayCountSuc);
 			resultMap.put("失败次数",triggerDayCountFail);
