@@ -48,3 +48,4 @@ kettle:
   database-user: root
   database-password: 12345678
   plugins-path: /Users/selegant/Downloads/plugins
+  app-name: kettle-job

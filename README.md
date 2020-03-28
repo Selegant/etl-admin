@@ -1,39 +1,103 @@
-# etl_admin
 
-#### 介绍
-{**以下是码云平台说明，您可以替换此简介**
-码云是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用码云实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+## ETL_ADMIN
 
-#### 软件架构
-软件架构说明
+ETL_ADMIN 是基于XXL_JOB分布式调度平台和KETTLE的ETL数据采集平台。
+因为现有集成KETTLE的采集调度平台功能都不太完善，无法很好的将KETTLE资源库的任务管理起来，同时对于KETTLE日志查看和日志告警的功能也不能很好的
+支持，无法确认现阶段有哪些任务报错，所以希望有一款能够支持同步KETTLE资源库，能够支持定时任务，支持实时查看KETTLE采集日志，支持分布式， 
+支持详细监控的的采集工具。同时在未来也会增加DataX的可视化功能，统一整合KETTLE和DataX两大采集工具，这也是该项目的初衷与目标
 
+## System Requirements
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+- Language: Java 8
+- Environment: MacOS， Windows，Linux
+- Database: Mysql5.7，Mysql8
+- Kettle: 7.0以上版本
 
 
-#### 码云特技
+## Features
+- 1、用户管理
+- 2、支持KETTLE指定数据源
+- 3、支持DataX可视化
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5.  码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+
+## Quick Start
+
+### 1.下载或拉取 ETL_ADMIN 代码
+
+### 2.执doc/db下的SQL文件
+
+### 3.将plugin下的plugins文件解压放到指定目录
+
+### 4.修改web模块下的application.yml的数据库配置信息
+
+### 5.修改web模块下的application.yml的Kettle配置信息
+
+```
+kettle:
+  repository-name: lx  #KETTLE资源库名称
+  repository-username: admin  #KETTLE资源库用户名
+  repository-password: shulan.com  #KETTLE资源库密码
+  access-type: Native #KETTLE资源数据库连接类型
+  database-type: MYSQL #KETTLE资源数据库类型
+  database-host: localhost #KETTLE资源数据库地址
+  database-name: kettle_lx #KETTLE资源数据库名称
+  database-port: 3306 #KETTLE资源数据库端口号
+  database-user: root #KETTLE资源数据库用户名
+  database-password: 12345678 #KETTLE资源数据库密码
+  plugins-path: /Users/selegant/Downloads/plugins #KETTLE插件地址
+  app-name: kettle-job #执行器名称
+
+```
+
+### 6.修改kettle-job模块下的application.yml的数据库配置信息(同web模块)
+
+### 7.修改kettle-job模块下的application.yml的Kettle配置信息(同web模块)
+
+### 8.执行器配置(使用开源项目xxl-job)
+![](https://github.com/WeiYe-Jing/datax-web/blob/master/doc/img/executor.png)
+- 1、"调度中心OnLine:"右侧显示在线的"调度中心"列表, 任务执行结束后, 将会以failover的模式进行回调调度中心通知执行结果, 避免回调的单点风险;
+- 2、"执行器列表" 中显示在线的执行器列表, 可通过"OnLine 机器"查看对应执行器的集群机器;
+#### 执行器属性说明
+![](https://github.com/WeiYe-Jing/datax-web/blob/master/doc/img/add_executor.png)
+```
+1、AppName: （与datax-executor中application.yml的datax.job.executor.appname保持一致）
+   每个执行器集群的唯一标示AppName, 执行器会周期性以AppName为对象进行自动注册。可通过该配置自动发现注册成功的执行器, 供任务调度时使用;
+2、名称: 执行器的名称, 因为AppName限制字母数字等组成,可读性不强, 名称为了提高执行器的可读性;
+3、排序: 执行器的排序, 系统中需要执行器的地方,如任务新增, 将会按照该排序读取可用的执行器列表;
+4、注册方式：调度中心获取执行器地址的方式；
+    自动注册：执行器自动进行执行器注册，调度中心通过底层注册表可以动态发现执行器机器地址；
+    手动录入：人工手动录入执行器的地址信息，多地址逗号分隔，供调度中心使用；
+5、机器地址："注册方式"为"手动录入"时有效，支持人工维护执行器的地址信息；
+```
+
+### 9. idea启动 WebApplication，KettleJobApplication
+
+### 10. 启动成功后打开页面（默认管理员用户名：admin 密码：123456）
+http://localhost:8100
+![](https://github.com/WeiYe-Jing/datax-web/blob/master/doc/img/dashboard.png)
+
+### 11. 点击KETTLE菜单选择用同步作业或转换
+
+### 12. 选择任务管理菜单开始任务或转换
+
+### 13. 选择日志管理菜单查看日志或者同步任务管理选择某一作业菜单查看
+
+### 14. 若任务错误则点击右上角铃铛查看日志告警 确认某一日志后则会消除告警日志
+
+
+
+## UI
+[前端github地址](https://github.com/WeiYe-Jing/datax-vue-admin.git)
+
+
+
+## Copyright and License
+This product is open source and free, and will continue to provide free community technical support. Individual or enterprise users are free to access and use.
+
+- Licensed under the GNU General Public License (GPL) v3.
+- Copyright (c) 2020-present, selegant.
+
+产品开源免费，并且将持续提供免费的社区技术支持。个人或企业内部可自由的接入和使用。
+
+## 欢迎打赏
+

@@ -1,6 +1,5 @@
 package com.selegant.kettle.service;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -8,8 +7,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.selegant.kettle.common.ResultResponse;
 import com.selegant.kettle.common.ResultUtils;
 import com.selegant.kettle.mapper.*;
@@ -25,6 +22,7 @@ import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +36,9 @@ import java.util.stream.Collectors;
 public class KettleResourceService extends ServiceImpl<KettleResourceMapper,KettleResource> {
 
     private Logger logger = LoggerFactory.getLogger(KettleResourceService.class);
+
+    @Value("${kettle.app-name}")
+    private String appName;
 
     @Autowired
     KettleDatabaseRepository kettleDatabaseRepository;
@@ -338,9 +339,9 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
      */
     private boolean syncNewResourceToXxlJob(List<KettleResource> list){
         XxlJobGroup xxlJobGroup = new XxlJobGroup();
-        xxlJobGroup.setAppName("kettle-job");
+        xxlJobGroup.setAppName(appName);
         QueryWrapper<XxlJobGroup> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("app_name","kettle-job");
+        queryWrapper.eq("app_name",appName);
         XxlJobGroup finalXxlJobGroup  = xxlJobGroupMapper.selectOne(queryWrapper);
 //        List<XxlJobInfo> jobInfoList = new ArrayList<>();
         list.forEach(s->{
