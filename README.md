@@ -110,6 +110,6 @@ This product is open source and free, and will continue to provide free communit
 
 ## 欢迎打赏
 
-![](https://github.com/Selegant/etl-admin/blob/master/doc/img/ali.jpg)
+<img src="https://github.com/Selegant/etl-admin/blob/master/doc/img/ali.jpg" width=256 height=256 />
 
-![](https://github.com/Selegant/etl-admin/blob/master/doc/img/weixin.jpg)
+<img src="https://github.com/Selegant/etl-admin/blob/master/doc/img/weixin.jpg" width=256 height=256 />
