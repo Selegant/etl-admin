@@ -27,7 +27,6 @@
 	<modules>
 		<module>web</module>
 		<module>xxl-job</module>
-		<module>datax</module>
 		<module>common</module>
 		<module>kettle-job</module>
 		<module>kettle</module>

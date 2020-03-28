@@ -11,45 +11,45 @@ import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LoggingBuffer;
-import org.pentaho.di.job.Job;
-import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
+import org.pentaho.di.trans.Trans;
+import org.pentaho.di.trans.TransMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @Slf4j
-public class KettleJobHandler extends BaseJobHandler {
-    private Logger logger = LoggerFactory.getLogger(KettleJobHandler.class);
+public class KettleTransHandler extends BaseJobHandler {
+    private Logger logger = LoggerFactory.getLogger(KettleTransHandler.class);
 
     @Autowired
     KettleDatabaseRepository kettleDatabaseRepository;
 
-    @XxlJob(value = "kettleJobHandler")
+
+    @XxlJob(value = "kettleTransHandler")
     @Override
     public ReturnT<String> execute(String params) {
         try {
             KettleParams kettleParams = JSONObject.parseObject(params, KettleParams.class);
             RepositoryDirectoryInterface directory = kettleDatabaseRepository.loadRepositoryDirectoryTree().findDirectory(kettleParams.getObjectDirectory());
-            JobMeta jobMeta = kettleDatabaseRepository.loadJob(kettleParams.getObjectName(), directory, new ProgressNullMonitorListener(), null);
-            Job job = new Job(kettleDatabaseRepository, jobMeta);
-            job.setLogLevel(getLogLevel(kettleParams.getLogLevel() == null ? 3 : kettleParams.getLogLevel()));
+            TransMeta transMeta = kettleDatabaseRepository.loadTransformation(kettleParams.getObjectName(), directory, new ProgressNullMonitorListener(), true, null);
+            Trans trans = new Trans(transMeta);
+            trans.setLogLevel(getLogLevel(kettleParams.getLogLevel()));
             try {
-                job.start();
+                trans.execute(null);
             } catch (Exception e) {
                 XxlJobLogger.log("运行错误信息:" + e.getMessage());
                 XxlJobLogger.log("运行具体信息:" + e);
             }
-            job.waitUntilFinished();
-            XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel() == null ? 3 : kettleParams.getLogLevel()));
+            trans.waitUntilFinished();
+            XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel()));
             LoggingBuffer appender = KettleLogStore.getAppender();
-            String logChannelId = job.getLogChannelId();
+            String logChannelId = trans.getLogChannelId();
             XxlJobLogger.log("日志内容:\n" + appender.getBuffer(logChannelId, true).toString());
-            if (job.getErrors() > 0) {
+            if (trans.getErrors() > 0) {
                 return FAIL;
             }
         } catch (KettleException e) {
