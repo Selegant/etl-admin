@@ -54,11 +54,9 @@ kettle:
 ### 7.修改kettle-job模块下的application.yml的Kettle配置信息(同web模块)
 
 ### 8.执行器配置(使用开源项目xxl-job)
-![](https://github.com/WeiYe-Jing/datax-web/blob/master/doc/img/executor.png)
 - 1、"调度中心OnLine:"右侧显示在线的"调度中心"列表, 任务执行结束后, 将会以failover的模式进行回调调度中心通知执行结果, 避免回调的单点风险;
 - 2、"执行器列表" 中显示在线的执行器列表, 可通过"OnLine 机器"查看对应执行器的集群机器;
 #### 执行器属性说明
-![](https://github.com/WeiYe-Jing/datax-web/blob/master/doc/img/add_executor.png)
 ```
 1、AppName: （与datax-executor中application.yml的datax.job.executor.appname保持一致）
    每个执行器集群的唯一标示AppName, 执行器会周期性以AppName为对象进行自动注册。可通过该配置自动发现注册成功的执行器, 供任务调度时使用;
@@ -74,20 +72,31 @@ kettle:
 
 ### 10. 启动成功后打开页面（默认管理员用户名：admin 密码：123456）
 http://localhost:8100
-![](https://github.com/WeiYe-Jing/datax-web/blob/master/doc/img/dashboard.png)
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/login.jpg)
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/index.jpg)
 
 ### 11. 点击KETTLE菜单选择用同步作业或转换
 
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/job_manage.jpg)
+
 ### 12. 选择任务管理菜单开始任务或转换
+
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/task.jpg)
 
 ### 13. 选择日志管理菜单查看日志或者同步任务管理选择某一作业菜单查看
 
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/log_manage.jpg)
+
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/log.jpg)
+
 ### 14. 若任务错误则点击右上角铃铛查看日志告警 确认某一日志后则会消除告警日志
+
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/alert.jpg)
 
 
 
 ## UI
-[前端github地址](https://github.com/WeiYe-Jing/datax-vue-admin.git)
+[前端github地址](https://github.com/Selegant/etl-admin-ui.git)
 
 
 
@@ -101,3 +110,6 @@ This product is open source and free, and will continue to provide free communit
 
 ## 欢迎打赏
 
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/ali.jpg)
+
+![](https://github.com/Selegant/etl-admin/blob/master/doc/img/weixin.jpg)
