@@ -22,6 +22,7 @@
 		<hutool.version>5.1.5</hutool.version>
 		<fastjson.version>1.2.66</fastjson.version>
 		<mysql.version>5.1.46</mysql.version>
+		<oracle.version>11.2.0.3</oracle.version>
 	</properties>
 
 	<modules>
@@ -30,6 +31,7 @@
 		<module>common</module>
 		<module>kettle-job</module>
 		<module>kettle</module>
+		<module>datax</module>
 	</modules>
 
 	<dependencies>
@@ -68,6 +70,13 @@
 			<version>${mysql.version}</version>
 		</dependency>
 
+		<!-- oracle -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>${oracle.version}</version>
+		</dependency>
+
 		<!-- hutool -->
 		<dependency>
 			<groupId>cn.hutool</groupId>
@@ -103,6 +112,17 @@
 			<version>${fastjson.version}</version>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>rdc-releases</id>
+			<url>https://repo.rdc.aliyun.com/repository/127507-release-4zPlLR/</url>
+		</repository>
+		<snapshotRepository>
+			<id>rdc-snapshots</id>
+			<url>https://repo.rdc.aliyun.com/repository/127507-snapshot-J7WOK8/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<build>
 		<plugins>

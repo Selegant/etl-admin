@@ -8,7 +8,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 
-@MapperScan({"com.selegant.common.mapper","com.selegant.xxljob.dao","com.selegant.kettle.mapper"})
+@MapperScan({"com.selegant.common.mapper","com.selegant.xxljob.dao","com.selegant.kettle.mapper","com.selegant.datax.mapper"})
 @SpringBootApplication
 public class WebApplication {
 

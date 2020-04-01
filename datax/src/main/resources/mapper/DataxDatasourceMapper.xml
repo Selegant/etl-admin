@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.datax.mapper.DataxDatasourceMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.datax.model.DataxDatasource">
+    <!--@mbg.generated-->
+    <!--@Table datax_datasource-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="datasource_name" jdbcType="VARCHAR" property="datasourceName" />
+    <result column="datasource" jdbcType="VARCHAR" property="datasource" />
+    <result column="datasource_group" jdbcType="VARCHAR" property="datasourceGroup" />
+    <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
+    <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
+    <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
+    <result column="jdbc_driver_class" jdbcType="VARCHAR" property="jdbcDriverClass" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="comments" jdbcType="VARCHAR" property="comments" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, datasource_name, datasource, datasource_group, jdbc_username, jdbc_password, 
+    jdbc_url, jdbc_driver_class, `status`, create_by, create_date, update_by, update_date, 
+    comments
+  </sql>
+</mapper>

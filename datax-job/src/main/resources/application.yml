@@ -1,18 +1,19 @@
 logging:
   config: classpath:logback.xml
 server:
-  port: 8083
+  port: 8084
 xxl:
   job:
     accessToken: ''
     admin:
       addresses: http://localhost:8082
     executor:
-      appname: kettle-job
+      appname: datax-job
       ip: ''
       logpath: /Users/selegant/Downloads/tmp/data/applogs/xxl-job/jobhandler
       logretentiondays: 30
-      port: 9997
+      port: 9998
+
 
 spring:
   datasource:
@@ -35,17 +36,3 @@ spring:
       max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
       connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
       connection-test-query: SELECT 1
-
-kettle:
-  repository-name: lx
-  repository-username: admin
-  repository-password: shulan.com
-  access-type: Native
-  database-type: MYSQL
-  database-host: localhost
-  database-name: kettle_lx
-  database-port: 3306
-  database-user: root
-  database-password: 12345678
-  plugins-path: /Users/selegant/Downloads/plugins
-  app-name: kettle-job
