@@ -1,6 +1,7 @@
 package com.selegant.dataxjob.handler;
 
-import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.UUID;
 import com.alibaba.datax.core.Engine;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -10,9 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
 import java.time.LocalTime;
 
+import static com.xxl.job.core.handler.IJobHandler.FAIL;
 import static com.xxl.job.core.handler.IJobHandler.SUCCESS;
 
 
@@ -23,15 +25,22 @@ public class DataXJobHandler  {
 
     @XxlJob(value = "dataxJobHandler")
     public ReturnT<String> execute(String params) {
-        String[] dataxArgs = {"-job", "/Users/selegant/Downloads/datax/job/test.json", "-mode", "standalone", "-jobid", "-1"};
+        String dataXPath = "/Users/selegant/Downloads/ETL/datax";
+        String tmpPath = dataXPath + "/tmp";
+        String name = tmpPath + "/" + UUID.fastUUID() + ".json";
+        FileUtil.appendString(params,name, "UTF-8");
+        String[] dataxArgs = {"-job", name, "-mode", "standalone", "-jobid", "-1"};
         try {
-            System.setProperty("datax.home", "/Users/selegant/Downloads/datax");
+            System.setProperty("datax.home", dataXPath);
             System.setProperty("now", LocalTime.now().toString());// 替换job中的占位符
             Engine.entry(dataxArgs);
         } catch (Throwable e) {
             e.printStackTrace();
-            logger.error(e.getMessage(),e);
+            XxlJobLogger.log("错误信息:" + e.getMessage());
+            XxlJobLogger.log("错误具体信息:" + e);
+            return FAIL;
         }
+        FileUtil.del(new File(name));
         return SUCCESS;
     }
 

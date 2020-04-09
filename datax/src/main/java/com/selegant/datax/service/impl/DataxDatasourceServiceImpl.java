@@ -1,11 +1,17 @@
 package com.selegant.datax.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.selegant.datax.base.Result;
+import com.selegant.datax.request.GenerateDataXRequest;
 import com.selegant.datax.response.PageInfoResponse;
+import com.selegant.datax.tool.QueryToolFactory;
+import com.selegant.datax.tool.datax.DataXJson;
 import com.selegant.datax.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,11 +21,15 @@ import com.selegant.datax.mapper.DataxDatasourceMapper;
 import com.selegant.datax.service.DataxDatasourceService;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
 public class DataxDatasourceServiceImpl extends ServiceImpl<DataxDatasourceMapper, DataxDatasource> implements DataxDatasourceService{
+
+
 
     @Override
     public Result saveDataSource(DataxDatasource dataxDatasource) {
@@ -82,5 +92,100 @@ public class DataxDatasourceServiceImpl extends ServiceImpl<DataxDatasourceMappe
     public Result updateDataSource(DataxDatasource dataxDatasource) {
         updateById(dataxDatasource);
         return ResultUtil.setSuccess("");
+    }
+
+    @Override
+    public Result datasourceList() {
+        return ResultUtil.setSuccess(list());
+    }
+
+    @Override
+    public Result getTables(String id) {
+        DataxDatasource dataxDatasource = getById(id);
+        if (ObjectUtil.isNotEmpty(dataxDatasource)){
+            List<String> list = QueryToolFactory.getByDbType(dataxDatasource).getTables();
+            return ResultUtil.setSuccess(list);
+        }
+        return ResultUtil.setError("无此数据源");
+    }
+
+    @Override
+    public Result getColumns(String id, String tableName) {
+        DataxDatasource dataxDatasource = getById(id);
+        if (ObjectUtil.isNotEmpty(dataxDatasource)){
+            List<String> list = QueryToolFactory.getByDbType(dataxDatasource).getColumns(tableName);
+            return ResultUtil.setSuccess(list);
+        }
+        return ResultUtil.setError("无此数据源");
+    }
+
+    @Override
+    public Result generateDataXJson(GenerateDataXRequest request) {
+        DataxDatasource originDatasource = getById(request.getOriginDatasourceId());
+        DataxDatasource targetDatasource = getById(request.getTargetDatasourceId());
+
+        DataXJson dataXJson = new DataXJson();
+        DataXJson.JobBean jobBean = new DataXJson.JobBean();
+        DataXJson.JobBean.SettingBean settingBean = new DataXJson.JobBean.SettingBean();
+        DataXJson.JobBean.SettingBean.ErrorLimitBean errorLimitBean = new DataXJson.JobBean.SettingBean.ErrorLimitBean();
+        errorLimitBean.setPercentage(0.02);
+        errorLimitBean.setRecord(0);
+        DataXJson.JobBean.SettingBean.SpeedBean speedBean = new DataXJson.JobBean.SettingBean.SpeedBean();
+        speedBean.setChannel(3);
+        settingBean.setSpeed(speedBean);
+        settingBean.setErrorLimit(errorLimitBean);
+
+        DataXJson.JobBean.ContentBean contentBean = new DataXJson.JobBean.ContentBean();
+
+
+        DataXJson.JobBean.ContentBean.ReaderBean readerBean = new DataXJson.JobBean.ContentBean.ReaderBean();
+        readerBean.setName(originDatasource.getDatasource()+"reader");
+        DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean parameterBean = new DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean();
+        parameterBean.setUsername(originDatasource.getJdbcUsername());
+        parameterBean.setPassword(originDatasource.getJdbcPassword());
+        parameterBean.setSplitPk(request.getSplitPk());
+        parameterBean.setColumn(request.getOriginColumns());
+        List<DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean.ConnectionBean> originConnections = new ArrayList<>();
+        DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean.ConnectionBean originConnection = new DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean.ConnectionBean();
+        List<String> originJdbcUrls = new ArrayList<>();
+        originJdbcUrls.add(originDatasource.getJdbcUrl());
+        originConnection.setJdbcUrl(originJdbcUrls);
+        List<String> originTables = new ArrayList<>();
+        originTables.add(request.getOriginTableName());
+        originConnection.setTable(originTables);
+        originConnections.add(originConnection);
+        parameterBean.setConnection(originConnections);
+        readerBean.setParameter(parameterBean);
+        contentBean.setReader(readerBean);
+
+
+        DataXJson.JobBean.ContentBean.WriterBean writerBean = new DataXJson.JobBean.ContentBean.WriterBean();
+        writerBean.setName(targetDatasource.getDatasource()+"writer");
+        DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX writeParams = new DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX();
+        writeParams.setUsername(targetDatasource.getJdbcUsername());
+        writeParams.setPassword(targetDatasource.getJdbcPassword());
+        writeParams.setWriteMode(request.getWriteMode());
+        List<String> preSqls = new ArrayList<>();
+        preSqls.add(request.getPreSql());
+        writeParams.setPreSql(preSqls);
+        writeParams.setColumn(request.getTargetColumns());
+        List<DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX.ConnectionBeanX> targetConnections = new ArrayList<>();
+        DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX.ConnectionBeanX targetConnection = new DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX.ConnectionBeanX();
+        targetConnection.setJdbcUrl(targetDatasource.getJdbcUrl());
+        List<String> targetTables = new ArrayList<>();
+        targetTables.add(request.getTargetTableName());
+        targetConnection.setTable(targetTables);
+        targetConnections.add(targetConnection);
+        writeParams.setConnection(targetConnections);
+        writerBean.setParameter(writeParams);
+        contentBean.setWriter(writerBean);
+
+        List<DataXJson.JobBean.ContentBean> contentBeans = new ArrayList<>();
+        contentBeans.add(contentBean);
+        jobBean.setSetting(settingBean);
+        jobBean.setContent(contentBeans);
+        dataXJson.setJob(jobBean);
+
+        return ResultUtil.setSuccess(JSONObject.toJSONString(dataXJson));
     }
 }

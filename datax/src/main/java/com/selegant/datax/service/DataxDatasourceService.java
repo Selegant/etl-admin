@@ -3,6 +3,7 @@ package com.selegant.datax.service;
 import com.selegant.datax.base.Result;
 import com.selegant.datax.model.DataxDatasource;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.selegant.datax.request.GenerateDataXRequest;
 import com.selegant.datax.response.PageInfoResponse;
 
 public interface DataxDatasourceService extends IService<DataxDatasource>{
@@ -36,4 +37,32 @@ public interface DataxDatasourceService extends IService<DataxDatasource>{
      * @return
      */
     Result updateDataSource(DataxDatasource dataxDatasource);
+
+    /**
+     * 获取数据源列表
+     * @return
+     */
+    Result datasourceList();
+
+    /**
+     * 根据数据库获取表信息
+     * @param id
+     * @return
+     */
+    Result getTables(String id);
+
+    /**
+     * 根据表名获取字段信息
+     * @param id
+     * @param tableName
+     * @return
+     */
+    Result getColumns(String id, String tableName);
+
+    /**
+     * 生成DataX JSON
+     * @param request
+     * @return
+     */
+    Result generateDataXJson(GenerateDataXRequest request);
 }

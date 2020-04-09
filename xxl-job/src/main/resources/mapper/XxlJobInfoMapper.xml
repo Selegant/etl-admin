@@ -207,7 +207,7 @@
 			<if test="executorHandler != null and executorHandler != ''">
 				executor_handler = #{executorHandler},
 			</if>
-			<if test="executorParam != null and executorParam != ''">
+			<if test="executorParam != null">
 				executor_param = #{executorParam},
 			</if>
 			<if test="executorBlockStrategy != null and executorBlockStrategy != ''">

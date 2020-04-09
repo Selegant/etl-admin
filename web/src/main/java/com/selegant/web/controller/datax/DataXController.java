@@ -2,13 +2,12 @@ package com.selegant.web.controller.datax;
 
 import com.selegant.datax.base.Result;
 import com.selegant.datax.model.DataxDatasource;
+import com.selegant.datax.request.GenerateDataXRequest;
 import com.selegant.datax.response.PageInfoResponse;
 import com.selegant.datax.service.DataxDatasourceService;
 import com.selegant.datax.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.xml.ws.Action;
 
 @RestController
 @RequestMapping("dataX")
@@ -43,5 +42,25 @@ public class DataXController {
     public Result deleteDataSource(String id) {
         dataxDatasourceService.removeById(id);
         return ResultUtil.setSuccess("");
+    }
+
+    @GetMapping("datasource/list")
+    public Result datasourceList() {
+        return dataxDatasourceService.datasourceList();
+    }
+
+    @GetMapping("getTables")
+    public Result getTables(String id) {
+        return dataxDatasourceService.getTables(id);
+    }
+
+    @GetMapping("getColumns")
+    public Result getColumns(String id,String tableName) {
+        return dataxDatasourceService.getColumns(id,tableName);
+    }
+
+    @PostMapping("generateDataXJson")
+    public Result generateDataXJson(@RequestBody GenerateDataXRequest request) {
+        return dataxDatasourceService.generateDataXJson(request);
     }
 }
