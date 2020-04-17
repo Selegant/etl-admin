@@ -5,25 +5,23 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.selegant.datax.base.Result;
+import com.selegant.datax.mapper.DataxDatasourceMapper;
+import com.selegant.datax.model.DataxDatasource;
 import com.selegant.datax.request.GenerateDataXRequest;
 import com.selegant.datax.response.PageInfoResponse;
+import com.selegant.datax.service.DataxDatasourceService;
 import com.selegant.datax.tool.QueryToolFactory;
 import com.selegant.datax.tool.datax.DataXJson;
 import com.selegant.datax.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.selegant.datax.model.DataxDatasource;
-import com.selegant.datax.mapper.DataxDatasourceMapper;
-import com.selegant.datax.service.DataxDatasourceService;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -112,8 +110,15 @@ public class DataxDatasourceServiceImpl extends ServiceImpl<DataxDatasourceMappe
     @Override
     public Result getColumns(String id, String tableName) {
         DataxDatasource dataxDatasource = getById(id);
+        List<Map<String,String>> resultList = new ArrayList<>();
         if (ObjectUtil.isNotEmpty(dataxDatasource)){
             List<String> list = QueryToolFactory.getByDbType(dataxDatasource).getColumns(tableName);
+            list.forEach(s->{
+                Map<String,String> map = new HashMap<>(16);
+                map.put("label",s);
+                map.put("value",s);
+                resultList.add(map);
+            });
             return ResultUtil.setSuccess(list);
         }
         return ResultUtil.setError("无此数据源");
@@ -140,13 +145,13 @@ public class DataxDatasourceServiceImpl extends ServiceImpl<DataxDatasourceMappe
 
         DataXJson.JobBean.ContentBean.ReaderBean readerBean = new DataXJson.JobBean.ContentBean.ReaderBean();
         readerBean.setName(originDatasource.getDatasource()+"reader");
-        DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean parameterBean = new DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean();
+        DataXJson.JobBean.ContentBean.ReaderBean.ReaderParameterBean parameterBean = new DataXJson.JobBean.ContentBean.ReaderBean.ReaderParameterBean();
         parameterBean.setUsername(originDatasource.getJdbcUsername());
         parameterBean.setPassword(originDatasource.getJdbcPassword());
         parameterBean.setSplitPk(request.getSplitPk());
         parameterBean.setColumn(request.getOriginColumns());
-        List<DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean.ConnectionBean> originConnections = new ArrayList<>();
-        DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean.ConnectionBean originConnection = new DataXJson.JobBean.ContentBean.ReaderBean.ParameterBean.ConnectionBean();
+        List<DataXJson.JobBean.ContentBean.ReaderBean.ReaderParameterBean.ConnectionBean> originConnections = new ArrayList<>();
+        DataXJson.JobBean.ContentBean.ReaderBean.ReaderParameterBean.ConnectionBean originConnection = new DataXJson.JobBean.ContentBean.ReaderBean.ReaderParameterBean.ConnectionBean();
         List<String> originJdbcUrls = new ArrayList<>();
         originJdbcUrls.add(originDatasource.getJdbcUrl());
         originConnection.setJdbcUrl(originJdbcUrls);
@@ -161,7 +166,7 @@ public class DataxDatasourceServiceImpl extends ServiceImpl<DataxDatasourceMappe
 
         DataXJson.JobBean.ContentBean.WriterBean writerBean = new DataXJson.JobBean.ContentBean.WriterBean();
         writerBean.setName(targetDatasource.getDatasource()+"writer");
-        DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX writeParams = new DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX();
+        DataXJson.JobBean.ContentBean.WriterBean.WriterParameterBean writeParams = new DataXJson.JobBean.ContentBean.WriterBean.WriterParameterBean();
         writeParams.setUsername(targetDatasource.getJdbcUsername());
         writeParams.setPassword(targetDatasource.getJdbcPassword());
         writeParams.setWriteMode(request.getWriteMode());
@@ -169,8 +174,8 @@ public class DataxDatasourceServiceImpl extends ServiceImpl<DataxDatasourceMappe
         preSqls.add(request.getPreSql());
         writeParams.setPreSql(preSqls);
         writeParams.setColumn(request.getTargetColumns());
-        List<DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX.ConnectionBeanX> targetConnections = new ArrayList<>();
-        DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX.ConnectionBeanX targetConnection = new DataXJson.JobBean.ContentBean.WriterBean.ParameterBeanX.ConnectionBeanX();
+        List<DataXJson.JobBean.ContentBean.WriterBean.WriterParameterBean.ConnectionBeanX> targetConnections = new ArrayList<>();
+        DataXJson.JobBean.ContentBean.WriterBean.WriterParameterBean.ConnectionBeanX targetConnection = new DataXJson.JobBean.ContentBean.WriterBean.WriterParameterBean.ConnectionBeanX();
         targetConnection.setJdbcUrl(targetDatasource.getJdbcUrl());
         List<String> targetTables = new ArrayList<>();
         targetTables.add(request.getTargetTableName());

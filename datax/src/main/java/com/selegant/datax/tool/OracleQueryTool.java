@@ -7,9 +7,7 @@ import com.selegant.datax.model.DataxDatasource;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class OracleQueryTool extends BaseQueryTool {
     public OracleQueryTool(DataxDatasource dataxDatasource) throws SQLException {
@@ -34,7 +32,7 @@ public class OracleQueryTool extends BaseQueryTool {
     public List<String> getColumns(String tableName) {
         List<String> results = new ArrayList<>();
         try {
-            List<Entity> list = SqlExecutor.query(connection, "SELECT column_name  FROM user_tab_columns where table_name = upper('" + tableName + "') order by column_name", new EntityListHandler());
+            List<Entity> list = SqlExecutor.query(connection, "SELECT column_name  FROM user_tab_columns where table_name = upper('" + tableName + "') order by replace(column_name,'_','')", new EntityListHandler());
             list.forEach(entity -> {
                 results.add(entity.getStr("COLUMN_NAME"));
             });

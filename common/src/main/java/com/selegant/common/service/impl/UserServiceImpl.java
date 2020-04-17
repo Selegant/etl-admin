@@ -3,7 +3,6 @@ package com.selegant.common.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,7 +20,6 @@ import com.selegant.common.service.UserService;
 import com.selegant.common.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.security.provider.MD5;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,6 +128,29 @@ public class UserServiceImpl extends ServiceImpl<EtlUserMapper,EtlUser> implemen
         headers.put("Custom-Header",IdUtil.fastSimpleUUID());
 
         return ResultUtil.setSuccess(userInfo,headers);
+    }
+
+    @Override
+    public Result changePassword(String accessToken, String oldPassword, String newPassword, String confirmPassword) {
+        if(ObjectUtil.isEmpty(accessToken)){
+            return null;
+        }
+        QueryWrapper<EtlUser> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("access_token",accessToken);
+
+        EtlUser user = getOne(userQueryWrapper);
+        if(ObjectUtil.isNull(user)){
+            return ResultUtil.setError("","未查询到用户");
+        }
+        if (!user.getPassword().equals(SecureUtil.md5(oldPassword))){
+            return ResultUtil.setError("","原密码不正确");
+        }
+        if (!newPassword.equals(confirmPassword)){
+            return ResultUtil.setError("","新密码和确认密码不一致");
+        }
+        user.setPassword(SecureUtil.md5(newPassword));
+        updateById(user);
+        return ResultUtil.setSuccess("");
     }
 
 

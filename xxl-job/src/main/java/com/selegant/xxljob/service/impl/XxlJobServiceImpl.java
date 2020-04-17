@@ -2,6 +2,7 @@ package com.selegant.xxljob.service.impl;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.selegant.xxljob.core.cron.CronExpression;
 import com.selegant.xxljob.core.model.XxlJobGroup;
@@ -89,6 +90,11 @@ public class XxlJobServiceImpl implements XxlJobService {
 		}
 		if (GlueTypeEnum.BEAN==GlueTypeEnum.match(jobInfo.getGlueType()) && (jobInfo.getExecutorHandler()==null || jobInfo.getExecutorHandler().trim().length()==0) ) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+"JobHandler") );
+		}
+
+		if(ObjectUtil.isNull(jobInfo.getObjectType())){
+			//判断任务类型是否为空 默认填入普通任务
+			jobInfo.setObjectType(3);
 		}
 
 		// fix "\r" in shell
@@ -402,9 +408,10 @@ public class XxlJobServiceImpl implements XxlJobService {
 		List<Map<String, Object>> result = new ArrayList<>(16);
 		List<XxlJobInfo> list = xxlJobInfoDao.getJobs();
 		Map<Integer,String> jobType = new HashMap<>(16);
-		jobType.put(1,"Kettle作业");
-		jobType.put(2,"Kettle转换");
+		jobType.put(1,"Kettle转换");
+		jobType.put(2,"Kettle作业");
 		jobType.put(3,"普通作业");
+		jobType.put(4,"DataX作业");
 		jobType.forEach((k,v)->{
 			Map<String,Object> jobTypeMap = new HashMap<>(16);
 			jobTypeMap.put("类型",jobType.get(k));

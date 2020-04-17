@@ -81,11 +81,11 @@ public class DataXJson {
                  */
 
                 private String name;
-                private ParameterBean parameter;
+                private ReaderParameterBean parameter;
 
                 @NoArgsConstructor
                 @Data
-                public static class ParameterBean {
+                public static class ReaderParameterBean {
                     /**
                      * username : nbods
                      * password : nbods
@@ -118,11 +118,11 @@ public class DataXJson {
                  */
 
                 private String name;
-                private ParameterBeanX parameter;
+                private WriterParameterBean parameter;
 
                 @NoArgsConstructor
                 @Data
-                public static class ParameterBeanX {
+                public static class WriterParameterBean {
                     /**
                      * writeMode : replace
                      * username : root

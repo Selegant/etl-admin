@@ -11,4 +11,6 @@ public interface UserService extends IService<EtlUser> {
     Result login(Map<String,String> params);
 
     Result getUserInfo(String accessToken);
+
+    Result changePassword(String accessToken, String oldPassword, String newPassword, String confirmPassword);
 }

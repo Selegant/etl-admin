@@ -352,7 +352,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
             info.setJobGroup(finalXxlJobGroup.getId());
             info.setJobDesc(s.getName());
             //默认Cron为1分钟1次
-            info.setJobCron("0 0/1 * * * ? ");
+            info.setJobCron("0 0/1 * * * ?");
             info.setAddTime(new Date());
             info.setUpdateTime(new Date());
             info.setAuthor(finalXxlJobGroup.getTitle());

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.selegant.kettle.mapper.CollectTimeMapper">
+  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.CollectTime">
+    <!--@mbg.generated-->
+    <!--@Table collect_time-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="view_name" jdbcType="LONGVARCHAR" property="viewName" />
+    <result column="last_collect_time" jdbcType="TIMESTAMP" property="lastCollectTime" />
+    <result column="current_collect_time" jdbcType="TIMESTAMP" property="currentCollectTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id,view_name, last_collect_time, current_collect_time
+  </sql>
+</mapper>

@@ -31,4 +31,10 @@ public class GenerateDataXRequest {
 
     private String batchSize;
 
+    private Integer channel;
+
+    private Integer record;
+
+    private double percentage;
+
 }
