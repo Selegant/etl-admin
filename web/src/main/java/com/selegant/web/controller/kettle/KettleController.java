@@ -1,15 +1,14 @@
 package com.selegant.web.controller.kettle;
 
 import cn.hutool.core.util.StrUtil;
-import com.selegant.common.util.ResultUtil;
 import com.selegant.kettle.common.ResultResponse;
 import com.selegant.kettle.common.ResultUtils;
+import com.selegant.kettle.init.KettleInit;
 import com.selegant.kettle.mapper.XxlJobInfoMapper;
 import com.selegant.kettle.model.KettleResource;
 import com.selegant.kettle.response.PageInfoResponse;
 import com.selegant.kettle.service.KettleResourceService;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class KettleController {
     private Logger logger = LoggerFactory.getLogger(KettleController.class);
 
     @Autowired
-    KettleDatabaseRepository kettleDatabaseRepository;
+    KettleInit kettleInit;
 
     @Autowired
     KettleResourceService kettleResourceService;

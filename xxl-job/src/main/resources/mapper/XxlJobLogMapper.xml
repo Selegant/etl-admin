@@ -332,5 +332,8 @@
 	<select id="getUnReadCount" resultType="int">
 		select count(*) from xxl_job_log where read_mark = 1
 	</select>
+    <select id="count" resultType="int">
+		select count(*) from xxl_job_log
+	</select>
 
 </mapper>

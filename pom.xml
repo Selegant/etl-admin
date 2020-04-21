@@ -23,6 +23,7 @@
 		<fastjson.version>1.2.66</fastjson.version>
 		<mysql.version>5.1.46</mysql.version>
 		<oracle.version>11.2.0.3</oracle.version>
+		<mssql-jdbc.version>7.2.1.jre8</mssql-jdbc.version>
 	</properties>
 
 	<modules>
@@ -77,6 +78,13 @@
 			<version>${oracle.version}</version>
 		</dependency>
 
+		<!-- SQL Server -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>${mssql-jdbc.version}</version>
+		</dependency>
+
 		<!-- hutool -->
 		<dependency>
 			<groupId>cn.hutool</groupId>
@@ -111,6 +119,40 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
+
+		<!-- kettle plugin excel export-->
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>org.apache.tomcat.embed</groupId>-->
+		<!--			<artifactId>tomcat-embed-core</artifactId>-->
+		<!--			<version>8.5.4</version>-->
+		<!--		</dependency>-->
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.19.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-apache-client</artifactId>
+			<version>1.19.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<distributionManagement>

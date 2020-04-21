@@ -37,15 +37,15 @@ spring:
       connection-test-query: SELECT 1
 
 kettle:
-  repository-name: lx
-  repository-username: admin
-  repository-password: shulan.com
-  access-type: Native
-  database-type: MYSQL
-  database-host: localhost
-  database-name: kettle_lx
-  database-port: 3306
-  database-user: root
-  database-password: 12345678
-  plugins-path: /Users/selegant/Downloads/plugins
-  app-name: kettle-job
+  repository-name: etl  #KETTLE资源库名称
+  repository-username: admin  #KETTLE资源库用户名
+  repository-password: shulan.com  #KETTLE资源库密码
+  access-type: Native #KETTLE资源数据库连接类型
+  database-type: MYSQL #KETTLE资源数据库类型
+  database-host: localhost #KETTLE资源数据库地址
+  database-name: kettle_etl #KETTLE资源数据库名称
+  database-port: 3306 #KETTLE资源数据库端口号
+  database-user: root #KETTLE资源数据库用户名
+  database-password: 12345678 #KETTLE资源数据库密码
+  plugins-path: /Users/selegant/Downloads/plugins #KETTLE插件地址
+  app-name: kettle-job #执行器名称

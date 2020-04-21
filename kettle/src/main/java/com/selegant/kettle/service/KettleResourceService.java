@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.selegant.kettle.common.ResultResponse;
 import com.selegant.kettle.common.ResultUtils;
+import com.selegant.kettle.init.KettleInit;
 import com.selegant.kettle.mapper.*;
 import com.selegant.kettle.model.KettleParams;
 import com.selegant.kettle.model.KettleResource;
@@ -41,7 +42,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
     private String appName;
 
     @Autowired
-    KettleDatabaseRepository kettleDatabaseRepository;
+    KettleInit kettleInit;
 
     @Autowired
     KettleResourceMapper kettleResourceMapper;
@@ -86,6 +87,8 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
      * @throws KettleException
      */
     public ResultResponse syncJob(int objectType) throws KettleException {
+
+        KettleDatabaseRepository kettleDatabaseRepository = kettleInit.loadKettleDatabaseRepository();
         //加载kettle资源文件夹树形列表
         RepositoryDirectoryInterface rDirectory = kettleDatabaseRepository.loadRepositoryDirectoryTree();
 

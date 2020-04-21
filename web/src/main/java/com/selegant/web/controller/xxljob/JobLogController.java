@@ -115,10 +115,10 @@ public class JobLogController {
 		}
 
 		int start = (pageNo-1) * pageSize;
-		int length = start + pageSize;
+		int length = pageSize;
 		// page query
 		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
-		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
+		int listCount = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
 
 		List<XxlJobInfo> xxlJobInfos = xxlJobInfoDao.getJobs();
 		list.forEach(s->{
@@ -130,8 +130,8 @@ public class JobLogController {
 
 		maps.put("pageNo",pageNo);
 		maps.put("pageSize",pageSize);
-		maps.put("totalCount", list_count);		// 总记录数
-		maps.put("totalPage", list_count);	// 过滤后的总记录数
+		maps.put("totalCount", listCount);		// 总记录数
+		maps.put("totalPage", list.size());	// 过滤后的总记录数
 		maps.put("data", list);  					// 分页列表
 		return maps;
 	}

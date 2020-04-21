@@ -1,11 +1,11 @@
 package com.selegant.kettle.service;
 
-import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.selegant.kettle.common.ResultResponse;
 import com.selegant.kettle.common.ResultUtils;
+import com.selegant.kettle.init.KettleInit;
 import com.selegant.kettle.mapper.KettleRepositoryMapper;
 import com.selegant.kettle.model.KettleRepository;
 import com.selegant.kettle.response.PageInfoResponse;
@@ -24,7 +24,7 @@ import java.util.Objects;
 public class KettleRepositoryService {
 
     @Autowired
-    KettleDatabaseRepository kettleDatabaseRepository;
+    KettleInit kettleInit;
 
     private Logger logger = LoggerFactory.getLogger(KettleRepositoryService.class);
 
@@ -61,6 +61,7 @@ public class KettleRepositoryService {
 //            repositoryMeta.setConnection(databaseMeta);
 //            repository.init(repositoryMeta);
 //            repository.connect(kettleRepository.getRepositoryUsername(), kettleRepository.getRepositoryPassword());
+            KettleDatabaseRepository kettleDatabaseRepository = kettleInit.loadKettleDatabaseRepository();
             RepositoryDirectoryInterface rd = kettleDatabaseRepository.loadRepositoryDirectoryTree();
             if (Objects.isNull(rd)) {
                 return ResultUtils.setError("测试失败");
