@@ -1,6 +1,5 @@
 package com.selegant.kettle.handler;
 
-import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.selegant.kettle.init.KettleInit;
 import com.selegant.kettle.model.KettleParams;
@@ -12,6 +11,7 @@ import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LoggingBuffer;
+import org.pentaho.di.core.logging.LoggingObject;
 import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
@@ -21,9 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 
 @Component
@@ -46,23 +43,24 @@ public class KettleJobHandler extends BaseJobHandler {
     @XxlJob(value = "kettleJobHandler")
     @Override
     public ReturnT<String> execute(String params) {
-        Future<ReturnT<String>> future = jobTaskExecutor.submit(() -> run(params));
-        while (true){
-            if(future.isDone()){
-                break;
-            }else {
-                ThreadUtil.safeSleep(10000);
-            }
-        }
-        try {
-            return future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return FAIL;
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            return FAIL;
-        }
+        return run(params);
+//        Future<ReturnT<String>> future = jobTaskExecutor.submit(() -> run(params));
+//        while (true){
+//            if(future.isDone()){
+//                break;
+//            }else {
+//                ThreadUtil.safeSleep(10000);
+//            }
+//        }
+//        try {
+//            return future.get();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//            return FAIL;
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//            return FAIL;
+//        }
     }
 
     private ReturnT<String> run(String params) {
@@ -72,7 +70,7 @@ public class KettleJobHandler extends BaseJobHandler {
             KettleParams kettleParams = JSONObject.parseObject(params, KettleParams.class);
             RepositoryDirectoryInterface directory = kettleDatabaseRepository.loadRepositoryDirectoryTree().findDirectory(kettleParams.getObjectDirectory());
             JobMeta jobMeta = kettleDatabaseRepository.loadJob(kettleParams.getObjectName(), directory, new ProgressNullMonitorListener(), null);
-            Job job = new Job(kettleDatabaseRepository, jobMeta);
+            Job job = new Job(kettleDatabaseRepository, jobMeta,new LoggingObject(this));
             job.setDaemon(true);
             job.setLogLevel(getLogLevel(kettleParams.getLogLevel() == null ? 3 : kettleParams.getLogLevel()));
             try {
@@ -85,8 +83,8 @@ public class KettleJobHandler extends BaseJobHandler {
             XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel() == null ? 3 : kettleParams.getLogLevel()));
             LoggingBuffer appender = KettleLogStore.getAppender();
             String logChannelId = job.getLogChannelId();
+            log.info("logChannelId"+logChannelId);
             XxlJobLogger.log("日志内容:\n" + appender.getBuffer(logChannelId, true).toString());
-            appender.clear();
             if (job.getErrors() > 0) {
                 return FAIL;
             }

@@ -10,6 +10,7 @@
 	<groupId>com.selegant</groupId>
 	<artifactId>kettle-job</artifactId>
 	<version>1.0.0</version>
+	<packaging>jar</packaging>
 	<name>kettle-job</name>
 	<description>Demo project for Spring Boot</description>
 

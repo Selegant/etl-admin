@@ -31,6 +31,7 @@
 		<module>xxl-job</module>
 		<module>common</module>
 		<module>kettle-job</module>
+		<module>datax-job</module>
 		<module>kettle</module>
 		<module>datax</module>
 	</modules>
@@ -165,14 +166,5 @@
 			<url>https://repo.rdc.aliyun.com/repository/127507-snapshot-J7WOK8/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
