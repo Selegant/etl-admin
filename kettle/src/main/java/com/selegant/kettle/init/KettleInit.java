@@ -16,36 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class KettleInit  {
 
-//    @Value("${kettle.repository-name}")
-//    private String repositoryName;
-//
-//    @Value("${kettle.access-type}")
-//    private String accessType;
-//
-//    @Value("${kettle.database-type}")
-//    private String databaseType;
-//
-//    @Value("${kettle.database-host}")
-//    private String databaseHost;
-//
-//    @Value("${kettle.database-name}")
-//    private String databaseName;
-//
-//    @Value("${kettle.database-port}")
-//    private String databasePort;
-//
-//    @Value("${kettle.database-user}")
-//    private String databaseUser;
-//
-//    @Value("${kettle.database-password}")
-//    private String databasePassword;
-//
-//    @Value("${kettle.repository-username}")
-//    private String repositoryUsername;
-//
-//    @Value("${kettle.repository-password}")
-//    private String repositoryPassword;
-
     @Value("${kettle.plugins-path}")
     private String pluginsPath;
 
@@ -53,11 +23,6 @@ public class KettleInit  {
     private KettleRepositoryMapper kettleRepositoryMapper;
 
     private Logger logger = LoggerFactory.getLogger(KettleInit.class);
-
-//    @Bean
-//    public KettleDatabaseRepository kettleDatabaseRepository() throws KettleException {
-//        return loadKettleDatabaseRepository();
-//    }
 
     public KettleDatabaseRepository loadKettleDatabaseRepository() throws KettleException {
         logger.info(">>>>>>>>>>>系统启动初始化Kettle环境开始<<<<<<<<<<<");
