@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,8 +75,14 @@ public class KettleRepositoryService {
         return ResultUtils.setOk();
     }
 
-    public boolean saveRepository(KettleRepository kettleRepository) {
-        return kettleRepositoryMapper.insert(kettleRepository) > 0;
+    public ResultResponse saveRepository(KettleRepository kettleRepository) {
+        kettleRepository.setAddTime(new Date());
+        kettleRepository.setEditTime(new Date());
+        if(kettleRepositoryMapper.insert(kettleRepository) > 0){
+            return ResultUtils.setOk();
+        }else {
+            return ResultUtils.setError("新增失败");
+        }
     }
 
     public ResultResponse updateRepository(KettleRepository kettleRepository) {
@@ -86,10 +94,28 @@ public class KettleRepositoryService {
     }
 
     public ResultResponse deleteRepository(Integer  repositoryId) {
+        KettleRepository kettleRepository = kettleRepositoryMapper.selectById(repositoryId);
+        if(1==kettleRepository.getUseFlag()){
+            return ResultUtils.setError("正在使用的资源库无法删除");
+        }
         if(kettleRepositoryMapper.deleteById(repositoryId) > 0){
             return ResultUtils.setOk();
         }else {
             return ResultUtils.setError("删除失败");
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ResultResponse checkRepository(Integer id) {
+        KettleRepository kettleRepository = new KettleRepository();
+        kettleRepository.setRepositoryId(id);
+        kettleRepository.setUseFlag(1);
+        if(kettleRepositoryMapper.updateById(kettleRepository) > 0){
+            kettleRepositoryMapper.updateOtherUseFlag(id);
+            kettleRepositoryMapper.truncateRecord();
+            return ResultUtils.setOk();
+        }else {
+            return ResultUtils.setError("切换成功");
         }
     }
 }

@@ -1,11 +1,14 @@
 package com.selegant.kettle.model;
 
+import cn.hutool.core.date.DatePattern;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @TableName(value = "kettle_repository")
@@ -13,7 +16,7 @@ public class KettleRepository {
     /**
      * ID
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "repository_id", type = IdType.AUTO)
     private Integer repositoryId;
 
     /**
@@ -80,6 +83,7 @@ public class KettleRepository {
      * 添加时间
      */
     @TableField(value = "add_time")
+    @JsonFormat(pattern= DatePattern.NORM_DATETIME_PATTERN,timezone = "GMT+8")
     private Date addTime;
 
     /**
@@ -92,6 +96,7 @@ public class KettleRepository {
      * 编辑时间
      */
     @TableField(value = "edit_time")
+    @JsonFormat(pattern= DatePattern.NORM_DATETIME_PATTERN,timezone = "GMT+8")
     private Date editTime;
 
     /**
@@ -105,4 +110,10 @@ public class KettleRepository {
      */
     @TableField(value = "del_flag")
     private Integer delFlag;
+
+    /**
+     * 是否使用（1：使用；0：未使用）
+     */
+    @TableField(value = "use_flag")
+    private Integer useFlag;
 }

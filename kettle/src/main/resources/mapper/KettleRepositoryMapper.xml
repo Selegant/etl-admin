@@ -20,11 +20,29 @@
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_user" jdbcType="INTEGER" property="editUser" />
     <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="use_flag" jdbcType="INTEGER" property="useFlag" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated generated on Tue Dec 31 16:12:41 CST 2019.-->
     repository_id, repository_name, repository_username, repository_password, repository_type,
     database_access, database_host, database_port, database_name, database_username,
-    database_password, add_time, add_user, edit_time, edit_user, del_flag
+    database_password, add_time, add_user, edit_time, edit_user, del_flag,use_flag
   </sql>
+  <update id="truncateRecord">
+    truncate table kettle_resource;
+    truncate table xxl_job_info;
+    truncate table xxl_job_log;
+    truncate table xxl_job_log_report;
+  </update>
+  <update id="updateOtherUseFlag" parameterType="int">
+    update kettle_repository set use_flag = 0
+    <where>
+      repository_id != #{id}
+    </where>
+  </update>
+  <select id="getUsedKettleRepository" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from kettle_repository
+    where use_flag = 1
+  </select>
 </mapper>

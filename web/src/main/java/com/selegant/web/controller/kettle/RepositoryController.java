@@ -18,11 +18,6 @@ public class RepositoryController {
         this.kettleRepositoryService = kettleRepositoryService;
     }
 
-    @RequestMapping
-    public String index() {
-        return "repository/repository.index";
-    }
-
     @RequestMapping("pageList")
     @ResponseBody
     public PageInfoResponse pageList(@RequestParam(required = false, defaultValue = "0") int start,
@@ -40,9 +35,8 @@ public class RepositoryController {
 
     @PostMapping("save")
     @ResponseBody
-    public String save(KettleRepository kettleRepository) {
-        kettleRepositoryService.saveRepository(kettleRepository);
-        return "repository/repository.index";
+    public ResultResponse save(KettleRepository kettleRepository) {
+        return kettleRepositoryService.saveRepository(kettleRepository);
     }
 
     @PostMapping("update")
@@ -51,10 +45,16 @@ public class RepositoryController {
         return kettleRepositoryService.updateRepository(kettleRepository);
     }
 
-    @DeleteMapping("delete/{repositoryId}")
+    @PostMapping("check")
     @ResponseBody
-    public ResultResponse delete(@PathVariable("repositoryId") Integer repositoryId) {
-        return kettleRepositoryService.deleteRepository(repositoryId);
+    public ResultResponse check(Integer id) {
+        return kettleRepositoryService.checkRepository(id);
+    }
+
+    @DeleteMapping("delete")
+    @ResponseBody
+    public ResultResponse delete(Integer id) {
+        return kettleRepositoryService.deleteRepository(id);
     }
 
 }
