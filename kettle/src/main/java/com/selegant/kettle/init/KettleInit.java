@@ -63,16 +63,43 @@ public class KettleInit  {
         KettleDatabaseRepository repository = new KettleDatabaseRepository();
         try {
             KettleRepository kettleRepository = kettleRepositoryMapper.getUsedKettleRepository();
-            KettleDatabaseRepositoryMeta repositoryMeta = new KettleDatabaseRepositoryMeta();
-            DatabaseMeta databaseMeta = new DatabaseMeta(kettleRepository.getRepositoryName(), kettleRepository.getRepositoryType(), kettleRepository.getDatabaseAccess(), kettleRepository.getDatabaseHost(), kettleRepository.getDatabaseName(), kettleRepository.getDatabasePort(), kettleRepository.getDatabaseUsername(), kettleRepository.getDatabasePassword());
-            repositoryMeta.setConnection(databaseMeta);
-            repository.init(repositoryMeta);
-            repository.connect(kettleRepository.getRepositoryUsername(), kettleRepository.getRepositoryPassword());
+            initKettleRepository(repository, kettleRepository);
         } catch (KettleException e) {
             logger.info(">>>>>>>>>>>初始化Kettle环境失败<<<<<<<<<<<");
             logger.error(e.getMessage(),e);
             throw new KettleException("初始化失败");
         }
         return repository;
+    }
+
+    public KettleDatabaseRepository loadKettleDatabaseRepository(KettleRepository kettleRepository) throws KettleException {
+        logger.info(">>>>>>>>>>>系统启动初始化Kettle环境开始<<<<<<<<<<<");
+        if(KettleEnvironment.isInitialized()){
+            logger.info(">>>>>>>>>>>Kettle环境已经初始化进行重新初始化<<<<<<<<<<<");
+            KettleEnvironment.shutdown();
+        }
+        System.getProperties().put("KETTLE_PLUGIN_BASE_FOLDERS", pluginsPath);
+
+
+        KettleEnvironment.init();
+
+        logger.info(">>>>>>>>>>>系统启动初始化Kettle环境成功<<<<<<<<<<<");
+        KettleDatabaseRepository repository = new KettleDatabaseRepository();
+        try {
+            initKettleRepository(repository, kettleRepository);
+        } catch (KettleException e) {
+            logger.info(">>>>>>>>>>>初始化Kettle环境失败<<<<<<<<<<<");
+            logger.error(e.getMessage(),e);
+            throw new KettleException("初始化失败");
+        }
+        return repository;
+    }
+
+    private void initKettleRepository(KettleDatabaseRepository repository, KettleRepository kettleRepository) throws KettleException {
+        KettleDatabaseRepositoryMeta repositoryMeta = new KettleDatabaseRepositoryMeta();
+        DatabaseMeta databaseMeta = new DatabaseMeta(kettleRepository.getRepositoryName(), kettleRepository.getRepositoryType(), kettleRepository.getDatabaseAccess(), kettleRepository.getDatabaseHost(), kettleRepository.getDatabaseName(), kettleRepository.getDatabasePort(), kettleRepository.getDatabaseUsername(), kettleRepository.getDatabasePassword());
+        repositoryMeta.setConnection(databaseMeta);
+        repository.init(repositoryMeta);
+        repository.connect(kettleRepository.getRepositoryUsername(), kettleRepository.getRepositoryPassword());
     }
 }

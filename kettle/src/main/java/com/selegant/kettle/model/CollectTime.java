@@ -30,4 +30,7 @@ public class CollectTime {
     @TableField(value = "current_collect_time")
     @JsonFormat(pattern= DatePattern.NORM_DATETIME_PATTERN,timezone = "GMT+8")
     private Date currentCollectTime;
+
+    @TableField(value = "view_desc")
+    private String viewDesc;
 }

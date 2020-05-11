@@ -63,7 +63,7 @@ public class KettleRepositoryService {
 //            repositoryMeta.setConnection(databaseMeta);
 //            repository.init(repositoryMeta);
 //            repository.connect(kettleRepository.getRepositoryUsername(), kettleRepository.getRepositoryPassword());
-            KettleDatabaseRepository kettleDatabaseRepository = kettleInit.loadKettleDatabaseRepository();
+            KettleDatabaseRepository kettleDatabaseRepository = kettleInit.loadKettleDatabaseRepository(kettleRepository);
             RepositoryDirectoryInterface rd = kettleDatabaseRepository.loadRepositoryDirectoryTree();
             if (Objects.isNull(rd)) {
                 return ResultUtils.setError("测试失败");

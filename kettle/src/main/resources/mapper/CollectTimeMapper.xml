@@ -8,9 +8,10 @@
     <result column="view_name" jdbcType="LONGVARCHAR" property="viewName" />
     <result column="last_collect_time" jdbcType="TIMESTAMP" property="lastCollectTime" />
     <result column="current_collect_time" jdbcType="TIMESTAMP" property="currentCollectTime" />
+    <result column="view_desc" jdbcType="VARCHAR" property="viewDesc" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id,view_name, last_collect_time, current_collect_time
+    id,view_name, last_collect_time, current_collect_time,view_desc
   </sql>
 </mapper>
