@@ -26,6 +26,9 @@ import java.util.Objects;
 public class KettleRepositoryService {
 
     @Autowired
+    AsyncTask asyncTask;
+
+    @Autowired
     KettleInit kettleInit;
 
     private Logger logger = LoggerFactory.getLogger(KettleRepositoryService.class);
@@ -78,10 +81,18 @@ public class KettleRepositoryService {
     public ResultResponse saveRepository(KettleRepository kettleRepository) {
         kettleRepository.setAddTime(new Date());
         kettleRepository.setEditTime(new Date());
-        if(kettleRepositoryMapper.insert(kettleRepository) > 0){
-            return ResultUtils.setOk();
+        if(Objects.isNull(kettleRepository.getRepositoryId())){
+            if(kettleRepositoryMapper.insert(kettleRepository) > 0){
+                return ResultUtils.setOk();
+            }else {
+                return ResultUtils.setError("新增失败");
+            }
         }else {
-            return ResultUtils.setError("新增失败");
+            if(kettleRepositoryMapper.updateById(kettleRepository) > 0){
+                return ResultUtils.setOk();
+            }else {
+                return ResultUtils.setError("新增失败");
+            }
         }
     }
 
@@ -112,10 +123,11 @@ public class KettleRepositoryService {
         kettleRepository.setUseFlag(1);
         if(kettleRepositoryMapper.updateById(kettleRepository) > 0){
             kettleRepositoryMapper.updateOtherUseFlag(id);
-            kettleRepositoryMapper.truncateRecord();
+            asyncTask.truncateRecord();
             return ResultUtils.setOk();
         }else {
             return ResultUtils.setError("切换成功");
         }
     }
+
 }

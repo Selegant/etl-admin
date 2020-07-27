@@ -6,9 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @MapperScan({"com.selegant.common.mapper","com.selegant.xxljob.dao","com.selegant.kettle.mapper","com.selegant.datax.mapper"})
 @SpringBootApplication
+@EnableAsync
 public class WebApplication{
 
     public static void main(String[] args) {
