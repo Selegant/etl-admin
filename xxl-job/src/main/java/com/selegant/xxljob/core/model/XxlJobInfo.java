@@ -42,6 +42,15 @@ public class XxlJobInfo {
 	private String objectId;  //对应Kettle任务ID
 	private int objectType; //调度任务类型
 
+	private String cronDesc; //调度解析
+
+	public String getCronDesc() {
+		return cronDesc;
+	}
+
+	public void setCronDesc(String cronDesc) {
+		this.cronDesc = cronDesc;
+	}
 
 	public String getObjectId() {
 		return objectId;

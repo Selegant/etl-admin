@@ -1,4 +1,4 @@
-package com.selegant.common.util;
+package com.selegant.xxljob.util;
 
 public class CronUtil {
 

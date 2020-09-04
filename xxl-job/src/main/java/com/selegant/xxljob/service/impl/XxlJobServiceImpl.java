@@ -14,6 +14,7 @@ import com.selegant.xxljob.core.thread.JobScheduleHelper;
 import com.selegant.xxljob.core.util.I18nUtil;
 import com.selegant.xxljob.dao.*;
 import com.selegant.xxljob.service.XxlJobService;
+import com.selegant.xxljob.util.CronUtil;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
@@ -52,6 +53,9 @@ public class XxlJobServiceImpl implements XxlJobService {
 		int start = (pageNo-1) * pageSize;
 		// page list
 		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
+		list.forEach(s->{
+			s.setCronDesc(CronUtil.descCorn(s.getJobCron()));
+		});
 		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();

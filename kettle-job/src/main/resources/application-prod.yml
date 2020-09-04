@@ -10,16 +10,16 @@ xxl:
     executor:
       appname: kettle-job
       ip: ''
-      logpath: /Users/selegant/Downloads/tmp/data/applogs/xxl-job/jobhandler
+      logpath: E:\\ETL_SERVER\\log\\xxl-job\\jobhandler
       logretentiondays: 30
       port: 9997
 
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://selegant.synology.me:33456/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://192.168.10.99:3306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
-    password: 12345678
+    password: KdfVip@0571
     tomcat:
       max-active: 30
       max-wait: 10000
@@ -37,5 +37,5 @@ spring:
       connection-test-query: SELECT 1
 
 kettle:
-  plugins-path: /Users/selegant/Downloads/plugins #KETTLE插件地址
+  plugins-path: E:\\kettle\\plugins #KETTLE插件地址
   app-name: kettle-job #执行器名称
