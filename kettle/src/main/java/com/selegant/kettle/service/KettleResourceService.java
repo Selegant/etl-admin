@@ -15,6 +15,8 @@ import com.selegant.kettle.model.KettleParams;
 import com.selegant.kettle.model.KettleResource;
 import com.selegant.kettle.model.XxlJobGroup;
 import com.selegant.kettle.model.XxlJobInfo;
+import com.selegant.kettle.request.SyncKettleResource;
+import com.selegant.kettle.response.KettleResourceTree;
 import com.selegant.kettle.response.PageInfoResponse;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
@@ -80,6 +82,43 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         return info;
     }
 
+    public ResultResponse getKettleResourceList(int objectType) throws KettleException {
+        List<String> selectedKeys = new ArrayList<>(16);
+        List<String> expandedKeys = new ArrayList<>(16);
+        List<RepositoryElementMetaInterface> jobList = getKettleJobList(objectType);
+        List<KettleResourceTree.Tree> trees = new ArrayList<>(16);
+        QueryWrapper<KettleResource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("deleted",0);
+        queryWrapper.eq("object_type",objectType);
+        List<KettleResource> existList = kettleResourceMapper.selectList(queryWrapper);
+        KettleResourceTree resourceTree = new KettleResourceTree();
+        jobList.forEach(s->{
+            if(trees.stream().noneMatch(m -> m.getKey().equals(s.getRepositoryDirectory().getObjectId().getId()))){
+                expandedKeys.add(s.getRepositoryDirectory().getObjectId().getId());
+                KettleResourceTree.Tree tree = new KettleResourceTree.Tree();
+                tree.setKey(s.getRepositoryDirectory().getObjectId().getId());
+                tree.setTitle(s.getRepositoryDirectory().getName());
+                List<KettleResourceTree.Tree> treeChildren = new ArrayList<>(16);
+                List<RepositoryElementMetaInterface> jobChildren = jobList.stream().filter(t->t.getRepositoryDirectory().getObjectId().equals(s.getRepositoryDirectory().getObjectId())).collect(Collectors.toList());
+                jobChildren.forEach(t->{
+                    if(existList.stream().anyMatch(e -> e.getObjectId().equals(t.getObjectId().getId()))){
+                        selectedKeys.add(tree.getKey()+'-'+t.getObjectId().getId());
+                    }
+                    KettleResourceTree.Tree treeChild = new KettleResourceTree.Tree();
+                    treeChild.setKey(tree.getKey()+'-'+t.getObjectId().getId());
+                    treeChild.setTitle(t.getName());
+                    treeChildren.add(treeChild);
+                });
+                tree.setChildren(treeChildren);
+                trees.add(tree);
+            }
+        });
+        resourceTree.setTrees(trees);
+        resourceTree.setSelectedKeys(selectedKeys.toArray());
+        resourceTree.setExpandedKeys(expandedKeys.toArray());
+        return ResultUtils.setOk(resourceTree);
+    }
+
 
     /**
      * 同步Kettle资源库作业信息到本地数据库
@@ -88,6 +127,14 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
      */
     public ResultResponse syncJob(int objectType) throws KettleException {
 
+        List<RepositoryElementMetaInterface> jobList = getKettleJobList(objectType);
+        //同步所有job到本地库中
+        syncResource(jobList, objectType);
+
+        return ResultUtils.setOk();
+    }
+
+    private List<RepositoryElementMetaInterface> getKettleJobList(int objectType) throws KettleException {
         KettleDatabaseRepository kettleDatabaseRepository = kettleInit.loadKettleDatabaseRepository();
         //加载kettle资源文件夹树形列表
         RepositoryDirectoryInterface rDirectory = kettleDatabaseRepository.loadRepositoryDirectoryTree();
@@ -114,15 +161,12 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         });
         List<RepositoryElementMetaInterface> jobList;
         //过滤trans信息 获取所有job信息
-        if(objectType==1){
+        if (objectType == 1) {
             jobList = jobAndTranList.stream().filter(s -> "transformation".equals(s.getObjectType().getTypeDescription())).collect(Collectors.toList());
-        }else {
+        } else {
             jobList = jobAndTranList.stream().filter(s -> "job".equals(s.getObjectType().getTypeDescription())).collect(Collectors.toList());
         }
-        //同步所有job到本地库中
-        syncResource(jobList, objectType);
-
-        return ResultUtils.setOk();
+        return jobList;
     }
 
     /**
@@ -154,6 +198,105 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         QueryWrapper<KettleResource> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("object_type",objectType);
         List<KettleResource> existList = kettleResourceMapper.selectList(queryWrapper);
+        //将Kettle作业分成需要新增的以及修改的两个列表
+        List<KettleResource> updateList = new ArrayList<>();
+        List<KettleResource> insertList = new ArrayList<>();
+        List<KettleResource> deleteList = new ArrayList<>();
+        if (existList.size() == 0) {
+            insertList.addAll(kettleResources);
+        } else {
+            //判断已经删除的资源
+            List<String> resourceObjectIds = new ArrayList<>();
+            kettleResources.forEach(s->resourceObjectIds.add(s.getObjectId()));
+            existList.forEach(n->{
+                if(!resourceObjectIds.contains(n.getObjectId())&&n.getObjectType()==objectType){
+                    n.setDeleted(true);
+                    deleteList.add(n);
+                    updateList.add(n);
+                }
+            });
+            //判断正常的资源
+            kettleResources.forEach(n -> {
+                //过滤所有已经存在的job信息，存在即更新不存在新增
+                if(existList.stream().anyMatch(s -> s.getObjectId().equals(n.getObjectId()))){
+                    updateList.add(n);
+                }else {
+                    insertList.add(n);
+                };
+            });
+        }
+        //判断 更新列表是否有被删除或者改名的任务
+        if(!updateList.isEmpty()){
+            updateList.forEach(s -> {
+                KettleParams kettleParams = new KettleParams();
+                kettleParams.setObjectId(s.getObjectId());
+                kettleParams.setObjectName(s.getName());
+                kettleParams.setObjectDirectory(s.getRepositoryDirectory());
+                kettleParams.setLogLevel(3);
+                s.setKettleParams(JSONObject.toJSONString(kettleParams));
+                kettleResourceMapper.updateByObjectIdAndOrderType(s);
+            });
+            deleteExistResourceToXxlJob(deleteList);
+            syncExistResourceToXxlJob(updateList);
+        }
+        //同步新增的任务
+        if(!insertList.isEmpty()){
+            insertList.stream().filter(s->!s.getDeleted()).forEach(s->{
+                //同步新增任务生成默认调度参数
+                //默认设置日志等级为基本日志
+                s.setLogLevel(3);
+                KettleParams kettleParams = new KettleParams();
+                kettleParams.setObjectId(s.getObjectId());
+                kettleParams.setObjectName(s.getName());
+                kettleParams.setObjectDirectory(s.getRepositoryDirectory());
+                kettleParams.setLogLevel(s.getLogLevel());
+                //默认生成调用参数
+                s.setKettleParams(JSONObject.toJSONString(kettleParams));
+            });
+//            kettleResourceMapper.insertList(insertList);
+            saveBatch(insertList);
+            //同步资源生成xxl_job任务
+            syncNewResourceToXxlJob(insertList);
+        }
+        return kettleResources;
+    }
+
+
+    /**
+     * 同步资源第二个版本
+     * @param list
+     * @param objectType
+     * @return
+     */
+    @Transactional
+    public List<KettleResource> syncResourceV2(List<RepositoryElementMetaInterface> list, int objectType) {
+        //解析Kettle作业列表
+        List<KettleResource> kettleResources = new ArrayList<>();
+        list.forEach(s -> {
+            KettleResource kettleResource = new KettleResource();
+            kettleResource.setName(s.getName());
+            kettleResource.setRepositoryDirectory(s.getRepositoryDirectory().getPath());
+            kettleResource.setModifiedUser(s.getModifiedUser());
+            kettleResource.setModifiedDate(s.getModifiedDate());
+            kettleResource.setObjectType(objectType);
+            kettleResource.setObjectId(s.getObjectId().getId());
+            kettleResource.setDescription(s.getDescription());
+            kettleResource.setDeleted(s.isDeleted());
+            kettleResource.setUpdateTime(new Date());
+            kettleResources.add(kettleResource);
+        });
+        //查询已经存在的作业
+        KettleResource kettleResource = new KettleResource();
+        kettleResource.setObjectType(objectType);
+        QueryWrapper<KettleResource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("object_type",objectType);
+        List<KettleResource> kettleList = kettleResourceMapper.selectList(queryWrapper);
+        List<KettleResource> existList = new ArrayList<>();
+        kettleList.forEach(e->{
+            if(kettleResources.stream().filter(s->s.getObjectId().equals(e.getObjectId())).count()>0){
+                existList.add(kettleResources.stream().filter(s->s.getObjectId().equals(e.getObjectId())).findFirst().get());
+            }
+        });
         //将Kettle作业分成需要新增的以及修改的两个列表
         List<KettleResource> updateList = new ArrayList<>();
         List<KettleResource> insertList = new ArrayList<>();
@@ -425,5 +568,31 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         }else {
             return ResultUtils.setError("删除资源失败");
         }
+    }
+
+    /**
+     * 根据任务ID同步转换或者作业
+     * @param resource
+     * @return
+     */
+    public ResultResponse syncJobAndTrans(SyncKettleResource resource) throws KettleException {
+        String[] preObjectIds = resource.getObjectIds();
+        List<String> objectIds = new ArrayList<>(16);
+        for (String objectId : preObjectIds) {
+            if(objectId.contains("-")){
+                objectIds.add(objectId.split("-")[1]);
+            }
+        }
+        List<RepositoryElementMetaInterface> jobList = getKettleJobList(Integer.parseInt(resource.getObjectType()));
+        List<RepositoryElementMetaInterface> syncJobList = new ArrayList<>();
+
+
+        objectIds.forEach(s->{
+            syncJobList.add(jobList.stream().filter(e-> s.equals(e.getObjectId().getId())).findFirst().get());
+        });
+        //同步所有job到本地库中
+        syncResourceV2(syncJobList, Integer.parseInt(resource.getObjectType()));
+
+        return ResultUtils.setOk();
     }
 }

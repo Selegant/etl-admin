@@ -6,6 +6,7 @@ import com.selegant.kettle.common.ResultUtils;
 import com.selegant.kettle.init.KettleInit;
 import com.selegant.kettle.mapper.XxlJobInfoMapper;
 import com.selegant.kettle.model.KettleResource;
+import com.selegant.kettle.request.SyncKettleResource;
 import com.selegant.kettle.response.PageInfoResponse;
 import com.selegant.kettle.service.KettleResourceService;
 import org.pentaho.di.core.exception.KettleException;
@@ -45,6 +46,19 @@ public class KettleController {
                                           String name) {
         return kettleResourceService.pageJobList(pageNo,pageSize,1,name);
     }
+
+    @RequestMapping("getKettleResourceList/{objectType}")
+    @ResponseBody
+    public ResultResponse getKettleResourceList(@PathVariable(value = "objectType") int objectType) throws KettleException {
+        return kettleResourceService.getKettleResourceList(objectType);
+    }
+
+    @PostMapping("syncJobAndTrans")
+    @ResponseBody
+    public ResultResponse syncJobAndTrans(@RequestBody SyncKettleResource resource) throws KettleException {
+        return kettleResourceService.syncJobAndTrans(resource);
+    }
+
 
     @PostMapping("job/syncJob")
     @ResponseBody
