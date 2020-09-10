@@ -9,6 +9,10 @@ import java.util.Date;
  */
 public class XxlJobInfo {
 
+	public XxlJobInfo() {
+		jobGroup = -1;
+	}
+
 	private int id;				// 主键ID
 
 	private int jobGroup;		// 执行器主键ID

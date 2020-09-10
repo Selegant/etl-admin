@@ -546,6 +546,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 			xxlJobInfo.setId(Integer.parseInt(ids));
 			xxlJobInfo.setJobCron(cron);
 			xxlJobInfoDao.update(xxlJobInfo);
+			return ReturnT.SUCCESS;
 		}
 		for (String id : strings) {
 			XxlJobInfo xxlJobInfo = new XxlJobInfo();

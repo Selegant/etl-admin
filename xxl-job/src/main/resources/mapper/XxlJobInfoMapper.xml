@@ -183,7 +183,7 @@
 	<update id="update" parameterType="com.selegant.xxljob.core.model.XxlJobInfo" >
 		UPDATE xxl_job_info
 		<set>
-			<if test="jobGroup != null">
+			<if test="jobGroup != null and jobGroup != -1">
 				job_group = #{jobGroup},
 			</if>
 			<if test="jobCron != null and jobCron != ''">
