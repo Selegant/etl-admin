@@ -36,7 +36,7 @@ public class MySqlQueryTool extends BaseQueryTool {
     public List<String> getColumns(String tableName) {
         List<String> results = new ArrayList<>();
         try {
-            List<Entity> list = SqlExecutor.query(connection,"select column_name from information_schema.columns where table_name='"+tableName+"' order by column_name",new EntityListHandler());
+            List<Entity> list = SqlExecutor.query(connection,"select column_name from information_schema.columns where table_name='"+tableName+"' and table_schema='"+connection.getClientInfo().getProperty("database")+"' order by column_name",new EntityListHandler());
             list.forEach(entity -> {
                 Set<String> stringSet = entity.getFieldNames();
                 stringSet.forEach(s -> {

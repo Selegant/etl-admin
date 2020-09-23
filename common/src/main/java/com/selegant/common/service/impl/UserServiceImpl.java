@@ -61,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<EtlUserMapper,EtlUser> implemen
 
             return ResultUtil.setSuccess(userInfo);
         }
-        return null;
+        return ResultUtil.setError("");
     }
 
 
