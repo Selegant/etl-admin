@@ -181,6 +181,7 @@ public class XxlJobTrigger {
         // 任务执行失败添加未读标志
         if (ReturnT.FAIL_CODE == triggerResult.getCode()){
             jobLog.setReadMark(ReadMark.UN_READ);
+            jobLog.setHandleCode(ReturnT.FAIL_CODE);
         }
         jobLog.setTriggerMsg(triggerMsgSb.toString());
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateTriggerInfo(jobLog);

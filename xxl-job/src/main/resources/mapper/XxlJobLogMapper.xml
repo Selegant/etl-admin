@@ -155,6 +155,7 @@
 			`executor_param`= #{executorParam},
 			`executor_sharding_param`= #{executorShardingParam},
 			`executor_fail_retry_count`= #{executorFailRetryCount},
+			`handle_code`= #{handleCode},
 			`read_mark`= #{readMark}
 		WHERE `id`= #{id}
 	</update>
