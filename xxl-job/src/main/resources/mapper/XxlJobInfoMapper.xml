@@ -35,6 +35,7 @@
 		<result column="trigger_next_time" property="triggerNextTime" />
 		<result column="object_id" property="objectId" />
 		<result column="object_type" property="objectType" />
+		<result column="current_collect_time" property="currentCollectTime"/>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -65,9 +66,10 @@
 	</sql>
 
 	<select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_info AS t
+		SELECT <include refid="Base_Column_List" />,x.current_collect_time
+		FROM xxl_job_info AS t,collect_time x
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
+			t.job_desc = x.view_name
 			<if test="jobGroup gt 0 and jobGroup != null">
 				AND t.job_group = #{jobGroup}
 			</if>

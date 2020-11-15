@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://selegant.synology.me:33456/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://selegant.synology.me:33306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
     password: 12345678
     tomcat:

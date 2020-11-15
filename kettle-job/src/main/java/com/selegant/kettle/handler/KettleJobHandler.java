@@ -72,7 +72,7 @@ public class KettleJobHandler extends BaseJobHandler {
             JobMeta jobMeta = kettleDatabaseRepository.loadJob(kettleParams.getObjectName(), directory, new ProgressNullMonitorListener(), null);
             Job job = new Job(kettleDatabaseRepository, jobMeta,new LoggingObject(this));
             job.setDaemon(true);
-            job.setLogLevel(getLogLevel(kettleParams.getLogLevel() == null ? 3 : kettleParams.getLogLevel()));
+            job.setLogLevel(getLogLevel(kettleParams.getLogLevel() == null ? 4 : kettleParams.getLogLevel()));
             try {
                 job.start();
             } catch (Exception e) {
@@ -80,7 +80,7 @@ public class KettleJobHandler extends BaseJobHandler {
                 XxlJobLogger.log("运行具体信息:" + e);
             }
             job.waitUntilFinished();
-            XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel() == null ? 3 : kettleParams.getLogLevel()));
+            XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel() == null ? 4 : kettleParams.getLogLevel()));
             LoggingBuffer appender = KettleLogStore.getAppender();
             String logChannelId = job.getLogChannelId();
             log.info("logChannelId"+logChannelId);

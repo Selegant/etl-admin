@@ -61,6 +61,9 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
     @Autowired
     XxlJobLogMapper xxlJobLogMapper;
 
+    @Autowired
+    CollectTimeService collectTimeService;
+
 
     public PageInfoResponse pageJobList(int pageNo, int pageSize,int objectType,String name) {
         KettleResource kettleResource = new KettleResource();
@@ -130,7 +133,10 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         List<RepositoryElementMetaInterface> jobList = getKettleJobList(objectType);
         //同步所有job到本地库中
         syncResource(jobList, objectType);
-
+        //采集时间只同步作业任务
+        if(objectType==2){
+            collectTimeService.syncJobCollectTime(jobList);
+        }
         return ResultUtils.setOk();
     }
 
@@ -232,7 +238,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
                 kettleParams.setObjectId(s.getObjectId());
                 kettleParams.setObjectName(s.getName());
                 kettleParams.setObjectDirectory(s.getRepositoryDirectory());
-                kettleParams.setLogLevel(3);
+                kettleParams.setLogLevel(4);
                 s.setKettleParams(JSONObject.toJSONString(kettleParams));
                 kettleResourceMapper.updateByObjectIdAndOrderType(s);
             });
@@ -244,7 +250,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
             insertList.stream().filter(s->!s.getDeleted()).forEach(s->{
                 //同步新增任务生成默认调度参数
                 //默认设置日志等级为基本日志
-                s.setLogLevel(3);
+                s.setLogLevel(4);
                 KettleParams kettleParams = new KettleParams();
                 kettleParams.setObjectId(s.getObjectId());
                 kettleParams.setObjectName(s.getName());
@@ -331,7 +337,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
                 kettleParams.setObjectId(s.getObjectId());
                 kettleParams.setObjectName(s.getName());
                 kettleParams.setObjectDirectory(s.getRepositoryDirectory());
-                kettleParams.setLogLevel(3);
+                kettleParams.setLogLevel(4);
                 s.setKettleParams(JSONObject.toJSONString(kettleParams));
                 kettleResourceMapper.updateByObjectIdAndOrderType(s);
             });
@@ -343,7 +349,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
             insertList.stream().filter(s->!s.getDeleted()).forEach(s->{
                 //同步新增任务生成默认调度参数
                 //默认设置日志等级为基本日志
-                s.setLogLevel(3);
+                s.setLogLevel(4);
                 KettleParams kettleParams = new KettleParams();
                 kettleParams.setObjectId(s.getObjectId());
                 kettleParams.setObjectName(s.getName());
@@ -429,6 +435,9 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         });
         if (xxlJobInfoMapper.delete(xxlJobInfoQueryWrapper) < 1) {
             return ResultUtils.setError("清除XXL_JOB失败");
+        }
+        if(objectType==2){
+            collectTimeService.truncateCollectTime();
         }
         return ResultUtils.setOk();
     }
@@ -592,7 +601,11 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         });
         //同步所有job到本地库中
         syncResourceV2(syncJobList, Integer.parseInt(resource.getObjectType()));
-
+        collectTimeService.syncJobCollectTime(syncJobList);
+        //采集时间只同步作业任务
+        if (Integer.parseInt(resource.getObjectType()) == 2) {
+            collectTimeService.syncJobCollectTime(jobList);
+        }
         return ResultUtils.setOk();
     }
 }

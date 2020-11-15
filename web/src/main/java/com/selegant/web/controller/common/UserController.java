@@ -21,9 +21,7 @@ public class UserController {
 
     @GetMapping("user/info")
     public Result info(HttpServletRequest request) {
-
         return userService.getUserInfo(request.getHeader("Access-Token"));
-
     }
 
     @PostMapping("user/changePassword")

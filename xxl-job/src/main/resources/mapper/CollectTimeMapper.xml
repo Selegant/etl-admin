@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.selegant.kettle.mapper.CollectTimeMapper">
-  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.CollectTime">
+<mapper namespace="com.selegant.xxljob.dao.CollectTimeDao">
+  <resultMap id="BaseResultMap" type="com.selegant.xxljob.core.model.CollectTime">
     <!--@mbg.generated-->
     <!--@Table collect_time-->
     <id column="id" jdbcType="INTEGER" property="id" />
@@ -14,8 +14,4 @@
     <!--@mbg.generated-->
     id,view_name, last_collect_time, current_collect_time,view_desc
   </sql>
-
-  <update id="updateCollectTimeByViewName" parameterType="String">
-    update collect_time set current_collect_time = #{collectTime,jdbcType=VARCHAR} where view_name = #{viewName,jdbcType=VARCHAR}
-  </update>
 </mapper>

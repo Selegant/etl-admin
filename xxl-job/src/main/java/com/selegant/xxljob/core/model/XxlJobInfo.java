@@ -1,5 +1,8 @@
 package com.selegant.xxljob.core.model;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+
 import java.util.Date;
 
 /**
@@ -47,6 +50,8 @@ public class XxlJobInfo {
 	private int objectType; //调度任务类型
 
 	private String cronDesc; //调度解析
+
+	private String currentCollectTime;
 
 	public String getCronDesc() {
 		return cronDesc;
@@ -246,5 +251,13 @@ public class XxlJobInfo {
 
 	public void setTriggerNextTime(long triggerNextTime) {
 		this.triggerNextTime = triggerNextTime;
+	}
+
+	public String getCurrentCollectTime() {
+		return currentCollectTime;
+	}
+
+	public void setCurrentCollectTime(String currentCollectTime) {
+		this.currentCollectTime = DateUtil.format(DateUtil.parse(currentCollectTime), DatePattern.NORM_DATETIME_PATTERN);
 	}
 }
