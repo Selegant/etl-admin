@@ -3,7 +3,6 @@ package com.selegant.web.controller.xxljob;
 import com.selegant.common.base.Result;
 import com.selegant.common.util.ResultUtil;
 import com.selegant.xxljob.core.cron.CronExpression;
-import com.selegant.xxljob.core.exception.XxlJobException;
 import com.selegant.xxljob.core.model.XxlJobGroup;
 import com.selegant.xxljob.core.model.XxlJobInfo;
 import com.selegant.xxljob.core.model.XxlJobUser;
@@ -19,7 +18,6 @@ import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -99,12 +97,19 @@ public class JobInfoController {
 	@RequestMapping("/pageList")
 	@ResponseBody
 	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int pageNo,
-			@RequestParam(required = false, defaultValue = "10") int pageSize,
-			@RequestParam(defaultValue = "-1") int jobGroup,@RequestParam(defaultValue = "-1") int triggerStatus,String objectType, String jobDesc, String executorHandler, String author,String cron) {
-		if ("-1".equals(cron)){
+										@RequestParam(required = false, defaultValue = "10") int pageSize,
+										@RequestParam(defaultValue = "-1") int jobGroup, @RequestParam(defaultValue = "-1") int triggerStatus,
+										String objectType,
+										String jobDesc,
+										String executorHandler,
+										String author,
+										String cron,
+										String sortField,
+										String sortOrder) {
+		if ("-1".equals(cron)) {
 			cron = null;
 		}
-		return xxlJobService.pageList(pageNo, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
+		return xxlJobService.pageList(pageNo, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron,sortField,sortOrder);
 	}
 
 

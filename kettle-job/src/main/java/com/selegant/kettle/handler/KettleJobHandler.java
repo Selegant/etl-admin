@@ -64,6 +64,7 @@ public class KettleJobHandler extends BaseJobHandler {
     }
 
     private ReturnT<String> run(String params) {
+        String content = "";
         try {
             //重新加载一下资源库防止资源变换 也为后期切换资源库作准备
             KettleDatabaseRepository kettleDatabaseRepository = kettleInit.loadKettleDatabaseRepository();
@@ -80,21 +81,25 @@ public class KettleJobHandler extends BaseJobHandler {
                 XxlJobLogger.log("运行具体信息:" + e);
             }
             job.waitUntilFinished();
+            XxlJobLogger.log("KETTLE");
+            XxlJobLogger.log("KETTLE_JOB");
+            XxlJobLogger.log("TASK_NAME:"+kettleParams.getObjectName());
             XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel() == null ? 4 : kettleParams.getLogLevel()));
             LoggingBuffer appender = KettleLogStore.getAppender();
             String logChannelId = job.getLogChannelId();
             log.info("logChannelId"+logChannelId);
-            XxlJobLogger.log("日志内容:\n" + appender.getBuffer(logChannelId, true).toString());
+            content = appender.getBuffer(logChannelId, true).toString();
+            XxlJobLogger.log("日志内容:\n" + content);
             if (job.getErrors() > 0) {
-                return FAIL;
+                return new ReturnT<>(500,content);
             }
         } catch (KettleException e) {
             logger.error(e.getMessage(), e);
             XxlJobLogger.log("错误信息:" + e.getMessage());
             XxlJobLogger.log("错误具体信息:" + e);
-            return FAIL;
+            return new ReturnT<>(500,content);
         }
-        return SUCCESS;
+        return new ReturnT<>(content);
     }
 
 }

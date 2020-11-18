@@ -8,7 +8,6 @@ import com.selegant.xxljob.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -71,7 +70,7 @@ public class MonitorController {
                                                @RequestParam(required = false, defaultValue = "0") int start,
                                                @RequestParam(required = false, defaultValue = "10") int length) {
 
-        List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, -1, -1, "", "", "",null,null);
+        List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, length, -1, -1, "", "", "",null,null,null,null);
         int list_count = xxlJobInfoDao.pageListCount(start, length, -1, -1, "", "", "",null,null);
         List<Map<String,Object>> results = new ArrayList<>();
         list.forEach(s->{

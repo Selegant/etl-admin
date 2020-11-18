@@ -4,7 +4,6 @@ package com.selegant.xxljob.service;
 import com.selegant.xxljob.core.model.XxlJobInfo;
 import com.xxl.job.core.biz.model.ReturnT;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,8 @@ public interface XxlJobService {
 	 * @param author
 	 * @return
 	 */
-	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType,String cron);
+	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType,String cron,String sortField,
+										String sortOrder);
 
 	/**
 	 * add job

@@ -22,7 +22,9 @@ public interface XxlJobInfoDao {
                                      @Param("executorHandler") String executorHandler,
                                      @Param("author") String author,
 									 @Param("objectType") String objectType,
-									 @Param("cron") String cron);
+									 @Param("cron") String cron,
+									 @Param("sortField")String sortField,
+									 @Param("sortOrder")String sortOrder);
 	public int pageListCount(@Param("offset") int offset,
                              @Param("pagesize") int pagesize,
                              @Param("jobGroup") int jobGroup,

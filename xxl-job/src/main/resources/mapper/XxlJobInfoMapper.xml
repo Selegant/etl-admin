@@ -67,9 +67,8 @@
 
 	<select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
 		SELECT <include refid="Base_Column_List" />,x.current_collect_time
-		FROM xxl_job_info AS t,collect_time x
+		FROM xxl_job_info AS t left join collect_time x on t.job_desc = x.view_name
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			t.job_desc = x.view_name
 			<if test="jobGroup gt 0 and jobGroup != null">
 				AND t.job_group = #{jobGroup}
 			</if>
@@ -92,13 +91,23 @@
 				AND t.job_cron = #{cron}
 			</if>
 		</trim>
-		ORDER BY id DESC
+		<if test="sortField != null and sortField != ''">
+			order by
+			${sortField}
+			<if test="sortOrder=='descend'">
+				desc
+			</if>
+		</if>
+		<if test="sortField == null or sortField == ''">
+			ORDER BY id DESC
+		</if>
+
 		LIMIT #{offset}, #{pagesize}
 	</select>
 
 	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT count(1)
-		FROM xxl_job_info AS t
+		FROM xxl_job_info AS t left join collect_time x on t.job_desc = x.view_name
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
@@ -146,7 +155,8 @@
 			child_jobid,
 			trigger_status,
 			trigger_last_time,
-			trigger_next_time
+			trigger_next_time,
+			object_type
 		) VALUES (
 			#{jobGroup},
 			#{jobCron},
@@ -168,7 +178,8 @@
 			#{childJobId},
 			#{triggerStatus},
 			#{triggerLastTime},
-			#{triggerNextTime}
+			#{triggerNextTime},
+			#{objectType}
 		);
 		<!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
 			SELECT LAST_INSERT_ID()

@@ -71,6 +71,9 @@ public class KettleTransHandler extends BaseJobHandler {
                 XxlJobLogger.log("运行具体信息:" + e);
             }
             trans.waitUntilFinished();
+            XxlJobLogger.log("KETTLE");
+            XxlJobLogger.log("KETTLE_TRANS");
+            XxlJobLogger.log("TASK_NAME:"+kettleParams.getObjectName());
             XxlJobLogger.log("日志等级:" + getLogLevel(kettleParams.getLogLevel()));
             LoggingBuffer appender = KettleLogStore.getAppender();
             String logChannelId = trans.getLogChannelId();

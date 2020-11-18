@@ -48,21 +48,24 @@ public class XxlJobServiceImpl implements XxlJobService {
 	private XxlJobLogReportDao xxlJobLogReportDao;
 
 	@Override
-	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType,String cron) {
-
+	public Map<String, Object> pageList(int pageNo, int pageSize, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author,String objectType,String cron,String sortField,
+										String sortOrder) {
+		if(StrUtil.isNotBlank(sortField)){
+			sortField = StrUtil.toUnderlineCase(sortField);
+		}
 		int start = (pageNo-1) * pageSize;
 		// page list
-		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
+		List<XxlJobInfo> list = xxlJobInfoDao.pageList(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron,sortField,sortOrder);
 		list.forEach(s->{
 			s.setCronDesc(CronUtil.descCorn(s.getJobCron()));
 		});
-		int list_count = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
+		int listCount = xxlJobInfoDao.pageListCount(start, pageSize, jobGroup, triggerStatus, jobDesc, executorHandler, author, objectType, cron);
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
 		maps.put("pageNo",pageNo);
 		maps.put("pageSize",pageSize);
-	    maps.put("totalCount", list_count);		// 总记录数
-	    maps.put("totalPage", list_count);	// 过滤后的总记录数
+	    maps.put("totalCount", listCount);		// 总记录数
+	    maps.put("totalPage", list.size());	// 过滤后的总记录数
 	    maps.put("data", list);  					// 分页列表
 		return maps;
 	}

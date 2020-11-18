@@ -75,6 +75,9 @@
 				AND t.trigger_code = 200
 				AND t.handle_code = 0
 			</if>
+			<if test="logStatus == 4" >
+				AND t.handle_code = 600
+			</if>
 			<if test="readMark != null and readMark != -1">
 				and t.read_mark = #{readMark}
 			</if>
@@ -111,6 +114,9 @@
 			<if test="logStatus == 3" >
 				AND t.trigger_code = 200
 				AND t.handle_code = 0
+			</if>
+			<if test="logStatus == 4" >
+				AND t.handle_code = 600
 			</if>
 			<if test="readMark != null and readMark != -1">
 				and t.read_mark = #{readMark}
