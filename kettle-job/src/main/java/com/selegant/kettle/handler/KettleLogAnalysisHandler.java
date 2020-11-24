@@ -64,13 +64,16 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
         String type = paramsObj.getString("type");
         try {
             if (ALL.equals(type)) {
-                XxlJobLogger.log("-------------------全部日志分析--------------------");
+                XxlJobLogger.log("-------------------分析全部日志--------------------");
+                XxlJobLogger.log("日志路径:" + logPath);
                 analysisAll();
             }
             if (TODAY.equals(type)) {
+                XxlJobLogger.log("-------------------分析今日日志--------------------");
+                XxlJobLogger.log("日志路径:" + logPath);
                 analysisToday();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             XxlJobLogger.log("-------------------分析失败--------------------");
             XxlJobLogger.log(e.getMessage());
             XxlJobLogger.log(e);
@@ -80,13 +83,17 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
         return ReturnT.SUCCESS;
     }
 
-    public  void analysisAll() {
+    public void analysisAll() {
         List<File> fileList = FileUtil.loopFiles(logPath);
         List<KettleCollection> collections = new ArrayList<>();
+        XxlJobLogger.log("日志数量:" + fileList.size());
         fileList.forEach(file -> {
+            XxlJobLogger.log("日志地址:" + file.getAbsolutePath());
             KettleCollection collection = analysisContent(file);
-            if(!Objects.isNull(collection)){
+            if (!Objects.isNull(collection)) {
                 collections.add(collection);
+            } else {
+                XxlJobLogger.log("日志不符合规范");
             }
         });
         kettleCollectionMapper.truncateCollection();
@@ -97,11 +104,15 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
     public void analysisToday() {
         List<File> fileList = FileUtil.loopFiles(logPath);
         fileList = fileList.stream().filter(file -> file.getAbsolutePath().contains(DateUtil.format(new Date(), DatePattern.NORM_DATE_FORMAT))).collect(Collectors.toList());
+        XxlJobLogger.log("日志数量:" + fileList.size());
         List<KettleCollection> collections = new ArrayList<>();
         fileList.forEach(file -> {
+            XxlJobLogger.log("日志地址:" + file.getAbsolutePath());
             KettleCollection collection = analysisContent(file);
-            if(!Objects.isNull(collection)){
+            if (!Objects.isNull(collection)) {
                 collections.add(collection);
+            } else {
+                XxlJobLogger.log("日志不符合规范");
             }
         });
         kettleCollectionMapper.deleteToDayCollection();
@@ -110,7 +121,7 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
     }
 
 
-    public  KettleCollection analysisContent(File file) {
+    public KettleCollection analysisContent(File file) {
         KettleCollection collection = new KettleCollection();
         List<String> content = FileUtil.readLines(file, "UTF-8");
         long count = content.stream().filter(line -> line.contains(KETTLE)).count();
@@ -124,10 +135,10 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
         if (content.stream().anyMatch(line -> line.contains(KETTLE_TRANS))) {
             collection.setJobType(1);
         }
-        if(content.size()-5>0){
-            String collectExecuteTime = content.get(content.size()-5);
-            if(StrUtil.isNotBlank(collectExecuteTime)&&collectExecuteTime.contains("/")){
-                collection.setCollectExecuteTime(DateUtil.parse(collectExecuteTime.substring(0,collectExecuteTime.indexOf(" - ")), "yyyy/MM/dd HH:mm:ss"));
+        if (content.size() - 5 > 0) {
+            String collectExecuteTime = content.get(content.size() - 5);
+            if (StrUtil.isNotBlank(collectExecuteTime) && collectExecuteTime.contains("/")) {
+                collection.setCollectExecuteTime(DateUtil.parse(collectExecuteTime.substring(0, collectExecuteTime.indexOf(" - ")), "yyyy/MM/dd HH:mm:ss"));
             }
         }
         String viewName = "";

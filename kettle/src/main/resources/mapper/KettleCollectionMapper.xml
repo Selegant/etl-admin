@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.selegant.kettle.mapper.KettleCollectionMapper">
-  <resultMap id="BaseResultMap" type="com.selegant.kettle.model.KettleCollection">
-    <!--@mbg.generated-->
-    <!--@Table kettle_collection-->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="view_name" jdbcType="VARCHAR" property="viewName" />
-    <result column="input_num" jdbcType="INTEGER" property="inputNum" />
-    <result column="output_num" jdbcType="INTEGER" property="outputNum" />
-    <result column="read_num" jdbcType="INTEGER" property="readNum" />
-    <result column="write_num" jdbcType="INTEGER" property="writeNum" />
-    <result column="update_num" jdbcType="INTEGER" property="updateNum" />
-    <result column="error_num" jdbcType="INTEGER" property="errorNum" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="collect_start_time" jdbcType="TIMESTAMP" property="collectStartTime" />
-    <result column="log_id" jdbcType="INTEGER" property="logId" />
-    <result column="error_flag" jdbcType="INTEGER" property="errorFlag" />
-    <result column="collect_end_time" jdbcType="TIMESTAMP" property="collectEndTime" />
-    <result column="job_type" jdbcType="INTEGER" property="jobType" />
-    <result column="collect_execute_time" jdbcType="TIMESTAMP" property="collectExecuteTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    id, view_name, input_num, output_num, read_num, write_num, update_num, error_num,
-    create_time, update_time, collect_start_time, log_id, error_flag, collect_end_time,
-    job_type, collect_execute_time
-  </sql>
-  <delete id="truncateCollection">
-    truncate table kettle_collection
-  </delete>
+    <resultMap id="BaseResultMap" type="com.selegant.kettle.model.KettleCollection">
+        <!--@mbg.generated-->
+        <!--@Table kettle_collection-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="view_name" jdbcType="VARCHAR" property="viewName"/>
+        <result column="input_num" jdbcType="INTEGER" property="inputNum"/>
+        <result column="output_num" jdbcType="INTEGER" property="outputNum"/>
+        <result column="read_num" jdbcType="INTEGER" property="readNum"/>
+        <result column="write_num" jdbcType="INTEGER" property="writeNum"/>
+        <result column="update_num" jdbcType="INTEGER" property="updateNum"/>
+        <result column="error_num" jdbcType="INTEGER" property="errorNum"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="collect_start_time" jdbcType="TIMESTAMP" property="collectStartTime"/>
+        <result column="log_id" jdbcType="INTEGER" property="logId"/>
+        <result column="error_flag" jdbcType="INTEGER" property="errorFlag"/>
+        <result column="collect_end_time" jdbcType="TIMESTAMP" property="collectEndTime"/>
+        <result column="job_type" jdbcType="INTEGER" property="jobType"/>
+        <result column="collect_execute_time" jdbcType="TIMESTAMP" property="collectExecuteTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, view_name, input_num, output_num, read_num, write_num, update_num, error_num,
+        create_time, update_time, collect_start_time, log_id, error_flag, collect_end_time,
+        job_type, collect_execute_time
+    </sql>
+    <delete id="truncateCollection">
 
-  <delete id="deleteToDayCollection">
-    delete from kettle_collection where to_days(collect_execute_time) = to_days(now())
-  </delete>
+            truncate table kettle_collection
+
+    </delete>
+
+    <delete id="deleteToDayCollection">
+
+            delete from kettle_collection where to_days(collect_execute_time) = to_days(now())
+
+    </delete>
+
+    <select id="statisticalDataVolume" resultType="java.util.Map">
+        select COALESCE(sum(output_num), 0) as sumOutputNum,
+               COALESCE(sum(error_num), 0)  as sumErrorNum,
+               COALESCE(sum(update_num), 0) as sunUpdateNum,
+               COALESCE(sum(write_num), 0)  as sumWriteNum
+        from kettle_collection
+        where to_days(collect_execute_time) = to_days(now())
+    </select>
 </mapper>

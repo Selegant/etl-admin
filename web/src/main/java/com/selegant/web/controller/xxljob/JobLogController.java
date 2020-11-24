@@ -91,6 +91,7 @@ public class JobLogController {
                                         @RequestParam(required = false, defaultValue = "0") int pageNo,
                                         @RequestParam(required = false, defaultValue = "10") int pageSize,
                                         @RequestParam(defaultValue = "0") int jobGroup,
+										@RequestParam(defaultValue = "0") int jobType,
 										@RequestParam(defaultValue = "0") int jobId,
 										@RequestParam(defaultValue = "-1")int logStatus,
 										@RequestParam(required = false, value = "filterTime[]")String filterTime[],
@@ -117,8 +118,8 @@ public class JobLogController {
 		int start = (pageNo-1) * pageSize;
 		int length = pageSize;
 		// page query
-		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
-		int listCount = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark);
+		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark,jobType);
+		int listCount = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark,jobType);
 
 		List<XxlJobInfo> xxlJobInfos = xxlJobInfoDao.getJobs();
 		list.forEach(s->{

@@ -44,6 +44,14 @@ public class XxlJobLog {
 
 	private String jobDesc;
 
+	private Integer writeNum;
+
+	private Integer updateNum;
+
+	private Integer outputNum;
+
+	private Integer errorNum;
+
 	public long getId() {
 		return id;
 	}
@@ -178,5 +186,37 @@ public class XxlJobLog {
 
 	public void setJobDesc(String jobDesc) {
 		this.jobDesc = jobDesc;
+	}
+
+	public Integer getWriteNum() {
+		return writeNum;
+	}
+
+	public void setWriteNum(Integer writeNum) {
+		this.writeNum = writeNum;
+	}
+
+	public Integer getUpdateNum() {
+		return updateNum;
+	}
+
+	public void setUpdateNum(Integer updateNum) {
+		this.updateNum = updateNum;
+	}
+
+	public Integer getErrorNum() {
+		return errorNum;
+	}
+
+	public void setErrorNum(Integer errorNum) {
+		this.errorNum = errorNum;
+	}
+
+	public Integer getOutputNum() {
+		return outputNum;
+	}
+
+	public void setOutputNum(Integer outputNum) {
+		this.outputNum = outputNum;
 	}
 }

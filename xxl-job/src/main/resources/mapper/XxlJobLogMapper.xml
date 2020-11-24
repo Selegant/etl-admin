@@ -25,6 +25,11 @@
 
 		<result column="alarm_status" property="alarmStatus" />
 		<result column="read_mark" property="readMark"/>
+
+		<result column="write_num" property="writeNum" />
+		<result column="update_num" property="updateNum" />
+		<result column="error_num" property="errorNum"/>
+		<result column="output_num" property="outputNum"/>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -47,8 +52,8 @@
 	</sql>
 
 	<select id="pageList" resultMap="XxlJobLog">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_log AS t
+		SELECT <include refid="Base_Column_List" />,b.write_num,b.update_num,b.error_num,b.output_num
+		FROM xxl_job_log AS t left join kettle_collection b on t.id = b.log_id
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="jobId==0 and jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
@@ -81,6 +86,12 @@
 			<if test="readMark != null and readMark != -1">
 				and t.read_mark = #{readMark}
 			</if>
+			<if test="jobType == 0">
+				and t.executor_handler in ('kettleJobHandler','kettleTransHandler')
+			</if>
+			<if test="jobType == 1">
+				and t.executor_handler not in ('kettleJobHandler','kettleTransHandler')
+			</if>
 		</trim>
 		ORDER BY t.trigger_time DESC
 		LIMIT #{offset}, #{pagesize}
@@ -88,7 +99,7 @@
 
 	<select id="pageListCount" resultType="int">
 		SELECT count(1)
-		FROM xxl_job_log AS t
+		FROM xxl_job_log AS t left join kettle_collection b on t.id = b.log_id
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="jobId==0 and jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
