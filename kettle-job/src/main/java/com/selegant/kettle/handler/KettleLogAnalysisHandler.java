@@ -1,5 +1,6 @@
 package com.selegant.kettle.handler;
 
+import cn.hutool.core.date.DateException;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -158,7 +159,11 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
         if (content.stream().anyMatch(line -> line.contains(KETTLE_COLLECT_END_TIME_DESC))) {
             String collectContent = content.stream().filter(line -> line.contains(KETTLE_COLLECT_END_TIME_DESC)).findFirst().orElse("");
             String collectTime = collectContent.substring(collectContent.indexOf("[") + 1, collectContent.indexOf("]"));
-            collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy/MM/dd HH:mm:ss"));
+            try{
+                collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy/MM/dd HH:mm:ss"));
+            }catch (DateException e){
+                collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy-MM-dd HH:mm:ss"));
+            }
         }
         if (content.stream().anyMatch(line -> line.contains(KETTLE_COLLECT_DESC))) {
             String collectContent = content.stream().filter(line -> line.contains(KETTLE_COLLECT_DESC)).findFirst().get();

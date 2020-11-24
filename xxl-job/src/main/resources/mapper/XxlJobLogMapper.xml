@@ -86,11 +86,13 @@
 			<if test="readMark != null and readMark != -1">
 				and t.read_mark = #{readMark}
 			</if>
-			<if test="jobType == 0">
-				and t.executor_handler in ('kettleJobHandler','kettleTransHandler')
-			</if>
-			<if test="jobType == 1">
-				and t.executor_handler not in ('kettleJobHandler','kettleTransHandler')
+			<if test="jobType != null">
+				<if test="jobType == 0">
+					and t.executor_handler in ('kettleJobHandler','kettleTransHandler')
+				</if>
+				<if test="jobType == 3">
+					and t.executor_handler not in ('kettleJobHandler','kettleTransHandler')
+				</if>
 			</if>
 		</trim>
 		ORDER BY t.trigger_time DESC
@@ -131,6 +133,14 @@
 			</if>
 			<if test="readMark != null and readMark != -1">
 				and t.read_mark = #{readMark}
+			</if>
+			<if test="jobType != null">
+				<if test="jobType == 0">
+					and t.executor_handler in ('kettleJobHandler','kettleTransHandler')
+				</if>
+				<if test="jobType == 3">
+					and t.executor_handler not in ('kettleJobHandler','kettleTransHandler')
+				</if>
 			</if>
 		</trim>
 	</select>
