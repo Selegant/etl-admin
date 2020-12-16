@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -162,7 +159,19 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
             try{
                 collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy/MM/dd HH:mm:ss"));
             }catch (DateException e){
-                collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy-MM-dd HH:mm:ss"));
+                try {
+                    collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy-MM-dd HH:mm:ss"));
+                }catch (DateException m){
+                    if (collectTime.length() == 10) {
+                        collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy-MM-dd"));
+                    }
+                    if (collectTime.length() == 13) {
+                        collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy-MM-dd HH"));
+                    }
+                    if (collectTime.length() == 16) {
+                        collection.setCollectEndTime(DateUtil.parse(collectTime, "yyyy-MM-dd HH:mm"));
+                    }
+                }
             }
         }
         if (content.stream().anyMatch(line -> line.contains(KETTLE_COLLECT_DESC))) {
