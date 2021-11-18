@@ -469,8 +469,8 @@ public class XxlJobServiceImpl implements XxlJobService {
 	public ReturnT<Map<String, Object>> monitorTaskExecInfo(String startDate, String endDate, String jobId) {
 		Map<String, Object> result = new HashMap<>(16);
 		List<Map<String, Object>> monitorTaskInfos = new ArrayList<>(16);
-		Date start = cn.hutool.core.date.DateUtil.parse(startDate, DatePattern.NORM_DATE_PATTERN);
-		Date end = cn.hutool.core.date.DateUtil.parse(endDate, DatePattern.NORM_DATE_PATTERN);
+		Date start = DateUtil.beginOfDay(cn.hutool.core.date.DateUtil.parse(startDate, DatePattern.NORM_DATE_PATTERN));
+		Date end = DateUtil.endOfDay(cn.hutool.core.date.DateUtil.parse(endDate, DatePattern.NORM_DATE_PATTERN));
 
 		List<XxlJobLog> xxlJobLogs = xxlJobLogDao.getMonitorLogInfo(start,end);
 

@@ -1,5 +1,6 @@
 package com.selegant.kettle.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -37,11 +38,14 @@ public class KettleRepositoryService {
     KettleRepositoryMapper kettleRepositoryMapper;
 
 
-    public PageInfoResponse pageList(int start, int length) {
+    public PageInfoResponse pageList(int start, int length,String repositoryName) {
         KettleRepository kettleRepository = new KettleRepository();
         kettleRepository.setDelFlag(0);
         QueryWrapper<KettleRepository> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("del_flag",0);
+        if(StrUtil.isNotBlank(repositoryName)){
+            queryWrapper.like("repository_name",repositoryName);
+        }
         PageHelper.startPage(start, length);
         List<KettleRepository> list = kettleRepositoryMapper.selectList(queryWrapper);
         list.forEach(s -> {

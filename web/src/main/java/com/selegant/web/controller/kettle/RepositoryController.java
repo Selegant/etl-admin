@@ -21,8 +21,9 @@ public class RepositoryController {
     @RequestMapping("pageList")
     @ResponseBody
     public PageInfoResponse pageList(@RequestParam(required = false, defaultValue = "0") int start,
-                                     @RequestParam(required = false, defaultValue = "10") int length) {
-        return kettleRepositoryService.pageList(start,length);
+                                     @RequestParam(required = false, defaultValue = "10") int length,
+                                     @RequestParam(required = false) String repositoryName) {
+        return kettleRepositoryService.pageList(start,length,repositoryName);
     }
 
 

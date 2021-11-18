@@ -111,8 +111,8 @@ public class JobLogController {
 //			}
 //		}
 		if(ObjectUtil.isNotEmpty(filterTime)){
-			triggerTimeStart = DateUtil.parse(filterTime[0], DatePattern.NORM_DATETIME_PATTERN);
-			triggerTimeEnd = DateUtil.parse(filterTime[1], DatePattern.NORM_DATETIME_PATTERN);
+			triggerTimeStart = cn.hutool.core.date.DateUtil.beginOfDay(DateUtil.parse(filterTime[0], DatePattern.NORM_DATETIME_PATTERN));
+			triggerTimeEnd = cn.hutool.core.date.DateUtil.endOfDay(DateUtil.parse(filterTime[1], DatePattern.NORM_DATETIME_PATTERN));
 		}
 
 		int start = (pageNo-1) * pageSize;
@@ -121,10 +121,10 @@ public class JobLogController {
 		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark,jobType);
 		int listCount = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus, readMark,jobType);
 
-		List<XxlJobInfo> xxlJobInfos = xxlJobInfoDao.getJobs();
-		list.forEach(s->{
-			s.setJobDesc(xxlJobInfos.stream().filter(x->x.getId()==s.getJobId()).findFirst().get().getJobDesc());
-		});
+//		List<XxlJobInfo> xxlJobInfos = xxlJobInfoDao.getJobs();
+//		list.forEach(s->{
+//			s.setJobDesc(xxlJobInfos.stream().filter(x->x.getId()==s.getJobId()).findFirst().get().getJobDesc());
+//		});
 
 		// package result
 		Map<String, Object> maps = new HashMap<>(16);

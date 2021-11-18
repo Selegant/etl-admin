@@ -71,7 +71,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         QueryWrapper<KettleResource> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("object_type",objectType);
         if(StrUtil.isNotBlank(name)){
-            queryWrapper.eq("name",name);
+            queryWrapper.like("name",name);
         }
         Page<KettleResource> page = new Page<>(pageNo, pageSize);
         IPage<KettleResource> list = page(page,queryWrapper);
@@ -395,6 +395,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         kettleParams.setLogLevel(kettleResource.getLogLevel());
         kettleResource.setUpdateTime(new Date());
         kettleResource.setKettleParams(JSONObject.toJSONString(kettleParams));
+        kettleResource.setModifiedDate(new Date());
         if(kettleResourceMapper.updateById(kettleResource)<1){
             return ResultUtils.setError("生成调度参数失败");
         }

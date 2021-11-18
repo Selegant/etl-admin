@@ -30,6 +30,8 @@
 		<result column="update_num" property="updateNum" />
 		<result column="error_num" property="errorNum"/>
 		<result column="output_num" property="outputNum"/>
+
+		<result column="job_desc" property="jobDesc"/>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -52,8 +54,8 @@
 	</sql>
 
 	<select id="pageList" resultMap="XxlJobLog">
-		SELECT <include refid="Base_Column_List" />,b.write_num,b.update_num,b.error_num,b.output_num
-		FROM xxl_job_log AS t left join kettle_collection b on t.id = b.log_id
+		SELECT <include refid="Base_Column_List" />,b.write_num,b.update_num,b.error_num,b.output_num,c.job_desc
+		FROM xxl_job_log AS t left join kettle_collection b on t.id = b.log_id left join xxl_job_info c on t.job_id=c.id
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="jobId==0 and jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
@@ -95,13 +97,13 @@
 				</if>
 			</if>
 		</trim>
-		ORDER BY t.trigger_time DESC
+		ORDER BY t.trigger_time DESC,t.id DESC
 		LIMIT #{offset}, #{pagesize}
 	</select>
 
 	<select id="pageListCount" resultType="int">
 		SELECT count(1)
-		FROM xxl_job_log AS t left join kettle_collection b on t.id = b.log_id
+		FROM xxl_job_log AS t left join kettle_collection b on t.id = b.log_id left join xxl_job_info c on t.job_id=c.id
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="jobId==0 and jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
