@@ -1,6 +1,9 @@
 package com.selegant.web.controller.xxljob;
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.selegant.common.base.Result;
+import com.selegant.common.util.CronExpParserUtil;
 import com.selegant.common.util.ResultUtil;
 import com.selegant.xxljob.core.cron.CronExpression;
 import com.selegant.xxljob.core.model.XxlJobGroup;
@@ -21,9 +24,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * index controller
@@ -62,9 +69,35 @@ public class JobInfoController {
 
 		result.put("jobGroupList", jobGroupList);
 		result.put("jobGroup", jobGroupList.stream().findFirst().get().getId());
-
 		return ResultUtil.setSuccess(result);
+	}
+	@GetMapping("table_schedule_time")
+	public void getCollectionTime(HttpServletResponse httpServletResponse) throws IOException {
+		List<XxlJobInfo> content = xxlJobService.list()
+				.getContent()
+				.stream()
+				.filter(v->v.getObjectType() == 1 || v.getObjectType() == 2)
+				.peek(v-> v.setJobCron(CronExpParserUtil.translateToChinese(v.getJobCron(),CronExpParserUtil.CRON_TIME_CN)))
+				.collect(Collectors.toList());
 
+		ExcelWriter writer = ExcelUtil.getWriter();
+		writer.addHeaderAlias("id","任务编号");
+		writer.addHeaderAlias("jobDesc","表名称");
+		writer.addHeaderAlias("cnDesc","表描述");
+		writer.addHeaderAlias("jobCron","调度时间");
+		writer.setOnlyAlias(true);
+		// 一次性写出内容，使用默认样式，强制输出标题
+		writer.write(content, true);
+		//out为OutputStream，需要写出到的目标流
+
+		//response为HttpServletResponse对象
+		httpServletResponse.setContentType("application/vnd.ms-excel;charset=utf-8");
+		//test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
+		httpServletResponse.setHeader("Content-Disposition","attachment;filename=table_schedule_time.xls");
+		ServletOutputStream out= httpServletResponse.getOutputStream();
+		writer.flush(out, true);
+		// 关闭writer，释放内存
+		writer.close();
 	}
 
 	public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupList_all){

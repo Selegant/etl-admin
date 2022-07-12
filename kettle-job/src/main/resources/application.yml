@@ -1,7 +1,8 @@
 logging:
   config: classpath:logback.xml
 server:
-  port: 8083
+#  port: 8083
+  port: 8084
 xxl:
   job:
     accessToken: ''
@@ -10,16 +11,19 @@ xxl:
     executor:
       appname: kettle-job
       ip: ''
-      logpath: /Users/selegant/Downloads/tmp/data/applogs/xxl-job/jobhandler
+#      logpath: /Users/selegant/Downloads/tmp/data/applogs/xxl-job/jobhandler
+      logpath: C:/Users/薛云腾/Desktop/log
       logretentiondays: 30
-      port: 9997
-
+#      port: 9997
+      port: 9998
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://selegant.synology.me:33306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false
+#    url: jdbc:mysql://node1:3306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
     password: 12345678
+#    password: root
     tomcat:
       max-active: 30
       max-wait: 10000
@@ -39,3 +43,4 @@ spring:
 kettle:
   plugins-path: /Users/selegant/Downloads/plugins #KETTLE插件地址
   app-name: kettle-job #执行器名称
+  waterfall-statics: true

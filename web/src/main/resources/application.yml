@@ -4,8 +4,10 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://selegant.synology.me:33306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+#    url: jdbc:mysql://node1:3306/etl?Unicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
     password: 12345678
+#    password: root
     tomcat:
       max-active: 30
       max-wait: 10000
@@ -59,5 +61,5 @@ mapper:
   enum-as-simple-type: true
 
 kettle:
-  plugins-path: /Users/selegant/Downloads/plugins #KETTLE插件地址
+  plugins-path: D:/kettle/data-integration/data-integration/plugins #KETTLE插件地址
   app-name: kettle-job #执行器名称

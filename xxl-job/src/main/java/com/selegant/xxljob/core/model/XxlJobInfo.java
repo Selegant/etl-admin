@@ -21,6 +21,7 @@ public class XxlJobInfo {
 	private int jobGroup;		// 执行器主键ID
 	private String jobCron;		// 任务执行CRON表达式
 	private String jobDesc;
+	private String cnDesc;
 
 	private Date addTime;
 	private Date updateTime;
@@ -143,6 +144,14 @@ public class XxlJobInfo {
 
 	public String getExecutorRouteStrategy() {
 		return executorRouteStrategy;
+	}
+
+	public String getCnDesc() {
+		return cnDesc;
+	}
+
+	public void setCnDesc(String cnDesc) {
+		this.cnDesc = cnDesc;
 	}
 
 	public void setExecutorRouteStrategy(String executorRouteStrategy) {

@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.selegant.kettle.constant.KettleLogConstant.*;
+
 /**
  * @author selegant
  */
@@ -34,25 +36,7 @@ public class KettleLogAnalysisHandler extends BaseJobHandler {
     @Autowired
     KettleCollectionMapper kettleCollectionMapper;
 
-    private static final String ALL = "ALL";
 
-    private static final String TODAY = "TODAY";
-
-    private static final String KETTLE_TRANS = "KETTLE_TRANS";
-
-    private static final String KETTLE_JOB = "KETTLE_JOB";
-
-    private static final String TASK_NAME = "TASK_NAME:";
-
-    private static final String KETTLE = "KETTLE";
-
-    private static final String KETTLE_EXCEPTION = "KettleException";
-
-    private static final String KETTLE_COLLECT_DESC = "插入 / 更新.0 - 完成处理";
-
-    private static final String KETTLE_COLLECT_START_TIME_DESC = "Set variable LAST_COLLECT_TIME to value";
-
-    private static final String KETTLE_COLLECT_END_TIME_DESC = "Set variable CURRENT_COLLECT_TIME to value";
 
 
     @XxlJob(value = "kettleLogAnalysisHandler")

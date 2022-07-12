@@ -64,6 +64,9 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
     @Autowired
     CollectTimeService collectTimeService;
 
+    @Autowired
+    TableDescService tableDescService;
+
 
     public PageInfoResponse pageJobList(int pageNo, int pageSize,int objectType,String name) {
         KettleResource kettleResource = new KettleResource();
@@ -407,6 +410,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
         queryWrapper.eq("object_type",kettleResource.getObjectType());
         xxlJobInfo = xxlJobInfoMapper.selectOne(queryWrapper);
         xxlJobInfo.setExecutorParam(kettleResource.getKettleParams());
+        xxlJobInfo.setCnDesc(tableDescService.getTableDesc(xxlJobInfo.getJobDesc(),xxlJobInfo.getObjectType()));
         if(xxlJobInfoMapper.updateById(xxlJobInfo)<1){
             return ResultUtils.setError("同步调度参数失败");
         }
@@ -457,6 +461,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
                     e.setExecutorParam(s.getKettleParams());
                     e.setJobDesc(s.getName());
                     e.setUpdateTime(new Date());
+                    e.setCnDesc(tableDescService.getTableDesc(e.getJobDesc(),e.getObjectType()));
                     xxlJobInfoMapper.updateById(e);
                 }
             });
@@ -531,6 +536,7 @@ public class KettleResourceService extends ServiceImpl<KettleResourceMapper,Kett
             info.setTriggerStatus((byte)0);
             info.setTriggerLastTime(0L);
             info.setTriggerNextTime(0L);
+            info.setCnDesc(tableDescService.getTableDesc(info.getJobDesc(), info.getObjectType()));
 //            jobInfoList.add(info);
             xxlJobInfoMapper.insert(info);
         });

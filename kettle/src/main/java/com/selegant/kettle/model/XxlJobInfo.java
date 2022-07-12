@@ -26,6 +26,9 @@ public class XxlJobInfo {
     @TableField(value = "job_desc")
     private String jobDesc;
 
+    @TableField(value = "cn_desc")
+    private String cnDesc;
+
     @TableField(value = "add_time")
     private Date addTime;
 

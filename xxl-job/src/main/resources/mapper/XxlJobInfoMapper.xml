@@ -9,6 +9,7 @@
 		<result column="job_group" property="jobGroup" />
 	    <result column="job_cron" property="jobCron" />
 	    <result column="job_desc" property="jobDesc" />
+		<result column="cn_desc" property="cnDesc"/>
 
 	    <result column="add_time" property="addTime" />
 	    <result column="update_time" property="updateTime" />
@@ -43,6 +44,7 @@
 		t.job_group,
 		t.job_cron,
 		t.job_desc,
+		t.cn_desc,
 		t.add_time,
 		t.update_time,
 		t.author,

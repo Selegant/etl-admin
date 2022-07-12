@@ -140,12 +140,14 @@ public class AdminBizImpl implements AdminBiz {
         }
 
         int ret = xxlJobRegistryDao.registryUpdate(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue(), new Date());
+        String msg ="修改执行器的时间";
         if (ret < 1) {
             xxlJobRegistryDao.registrySave(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue(), new Date());
-
+            msg = "注册执行器";
             // fresh
             freshGroupRegistryInfo(registryParam);
         }
+        logger.info(msg.concat(",params:{}"),registryParam);
         return ReturnT.SUCCESS;
     }
 
@@ -161,7 +163,7 @@ public class AdminBizImpl implements AdminBiz {
 
         int ret = xxlJobRegistryDao.registryDelete(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue());
         if (ret > 0) {
-
+            logger.info("移除执行器,param:{}",registryParam);
             // fresh
             freshGroupRegistryInfo(registryParam);
         }
