@@ -20,7 +20,7 @@
 		<xxl.job.version>2.1.2</xxl.job.version>
 		<mybatis.version>2.1.1</mybatis.version>
 		<hutool.version>5.7.6</hutool.version>
-		<fastjson.version>1.2.66</fastjson.version>
+		<fastjson.version>1.2.83</fastjson.version>
 		<mysql.version>5.1.46</mysql.version>
 		<oracle.version>11.2.0.3</oracle.version>
 		<mssql-jdbc.version>7.2.1.jre8</mssql-jdbc.version>
